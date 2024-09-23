@@ -26,13 +26,15 @@ public class CardManagerScr : MonoBehaviour
 {
     void Awake(){
         CardsManager.AllCards.Add(new Card("docks", "picture/location/Green/docks", "Green", 3));
+        CardsManager.AllCards.Add(new Card("Harbor", "picture/location/Green/harbor", "Green", 4));
+        CardsManager.AllCards.Add(new Card("Market", "picture/location/Green/market", "Green", 2));
         CardsManager.AllCards.Add(new Card("docks", "picture/location/Green/docks", "Green", 3));
-       // CardsManager.AllCards.Add(new Card("Docks", "location/picture/Green/docks", "Green", 3));
+        CardsManager.AllCards.Add(new Card("Docks", "picture/location/Green/docks", "Green", 3));
 
-        //CardsManager.AllCards.Add(new Card("Harbor", "Assets/cards/location/picture/Green/harbor", "Green", 4));
+        
 
+      
         /*CardsManager.AllCards.Add(new Card("Market", "Assets/cards/location/picture/Green/market.png", "Green", 2));
-        CardsManager.AllCards.Add(new Card("Market", "Assets/cards/location/picture/Green/market.png", "Green", 2));
         CardsManager.AllCards.Add(new Card("Market", "Assets/cards/location/picture/Green/market.png", "Green", 2));
         CardsManager.AllCards.Add(new Card("Market", "Assets/cards/location/picture/Green/market.png", "Green", 2));
 

@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Card
+  - RoleCardField
+  - HandField
+  - PlayingField
   layers:
   - Default
   - TransparentFX
