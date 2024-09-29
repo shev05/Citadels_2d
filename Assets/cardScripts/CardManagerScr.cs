@@ -34,16 +34,16 @@ public class CardManagerScr : MonoBehaviour
         
 
       
-        /*CardsManager.AllCards.Add(new Card("Market", "Assets/cards/location/picture/Green/market.png", "Green", 2));
-        CardsManager.AllCards.Add(new Card("Market", "Assets/cards/location/picture/Green/market.png", "Green", 2));
-        CardsManager.AllCards.Add(new Card("Market", "Assets/cards/location/picture/Green/market.png", "Green", 2));
+        CardsManager.AllCards.Add(new Card("Market", "picture/location/Green/market", "Green", 2));
+        CardsManager.AllCards.Add(new Card("Market", "picture/location/Green/market", "Green", 2));
+        CardsManager.AllCards.Add(new Card("Market", "picture/location/Green/market", "Green", 2));
 
-        CardsManager.AllCards.Add(new Card("Tavern", "Assets/cards/location/picture/Green/tavern.png", "Green", 1));
-        CardsManager.AllCards.Add(new Card("Townhall", "Assets/cards/location/picture/Green/townhall.png", "Green", 5));
+        CardsManager.AllCards.Add(new Card("Tavern", "picture/location/Green/tavern", "Green", 1));
+        CardsManager.AllCards.Add(new Card("Townhall", "picture/location/Green/townhall", "Green", 5));
 
-        CardsManager.AllCards.Add(new Card("TradingPost", "Assets/cards/location/picture/Green/tradingpost.png", "Green", 2));
-        CardsManager.AllCards.Add(new Card("TradingPost", "Assets/cards/location/picture/Green/tradingpost.png", "Green", 2));
-        CardsManager.AllCards.Add(new Card("Tra dingPost", "Assets/cards/location/picture/Green/tradingpost.png", "Green", 2));*/
+        CardsManager.AllCards.Add(new Card("TradingPost", "picture/location/Green/tradingpost", "Green", 2));
+        CardsManager.AllCards.Add(new Card("TradingPost", "picture/location/Green/tradingpost", "Green", 2));
+        CardsManager.AllCards.Add(new Card("TradingPost", "picture/location/Green/tradingpost", "Green", 2));
     }
   /*  public void AwakeBlue()
     {
