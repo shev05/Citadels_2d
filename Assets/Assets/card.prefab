@@ -90,6 +90,8 @@ GameObject:
   - component: {fileID: 3379512872523483635}
   - component: {fileID: 2051969675921195009}
   - component: {fileID: 8852805764736705929}
+  - component: {fileID: -930768660240506464}
+  - component: {fileID: -4470436044906388634}
   m_Layer: 5
   m_Name: card
   m_TagString: Untagged
@@ -194,7 +196,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Logo: {fileID: 246568402997309141}
-  EnlargedCardImage: {fileID: 4454263790460106349, guid: b890f786902c3ee45839156f0f1785cf, type: 3}
 --- !u!61 &8852805764736705929
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -240,3 +241,42 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 239.411, y: 313.566}
   m_EdgeRadius: 0
+--- !u!114 &-930768660240506464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4031971454561691786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: -4470436044906388634}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &-4470436044906388634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4031971454561691786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 1
+  m_UseLocal: 1
