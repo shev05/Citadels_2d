@@ -40,6 +40,8 @@ MonoBehaviour:
   - Fire
   - RespawnSpaceship
   - Send_Data
+  - DealCards
+  - Deal
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0

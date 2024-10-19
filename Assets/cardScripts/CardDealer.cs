@@ -2,44 +2,46 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
-public class CardDealer : MonoBehaviour
+public class CardDealer : MonoBehaviourPun
 {
-    public Transform deckPosition;  // Позиция колоды (место, откуда "вылетают" карты)
-    public Transform handPosition;   // Позиция руки (куда карты будут перемещаться)
-    public int cardsToDeal = 5;      // Количество карт, которые нужно выдать
-    public float animationDuration = 0.5f; // Длительность анимации переноса карты
-    public GameObject cardPrefab;    // Префаб карты для создания объектов
-    private List<Card> deck;         // Колода карт
+    public Transform[] handPositions;  // Массив с позициями рук для каждого игрока
+    public int cardsToDeal = 5;        // Количество карт для раздачи
+    public float animationDuration = 0.5f; // Длительность анимации перемещения карты
+    public GameObject cardPrefab;      // Префаб карты для создания объектов
+    private List<Card> deck;           // Колода карт
     public Canvas canvas;
     private Vector3 screenCardPos;
+    private PhotonView photonView;
 
     private void Start()
     {
-        Vector3 worldPosition = deckPosition.position;
+        Vector3 worldPosition = handPositions[0].position; // Позиция первой руки
         screenCardPos = Camera.main.WorldToScreenPoint(worldPosition);
+        photonView = GetComponent<PhotonView>();
 
+        // Создаем колоду
         deck = new List<Card>(CardsManager.AllCards);
     }
 
     private void Update()
     {
-        // Проверяем нажатие клавиши (например, пробел)
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            /*foreach (var d in deck)
-            {
-                Debug.Log(d.Name);
-            }*/
-            // Начинаем выдавать карты при нажатии пробела
-            StartCoroutine(DealCards());
+            photonView.RPC("Deal", RpcTarget.All);
         }
     }
 
-    // Функция для выдачи карт
-    private IEnumerator DealCards()
+    [PunRPC]
+    public void Deal()
     {
-        // Проверяем, что карт в колоде достаточно
+        StartCoroutine(DealCards());
+    }
+
+    // Функция для раздачи карт
+    public IEnumerator DealCards()
+    {
         if (deck.Count >= cardsToDeal)
         {
             for (int i = 0; i < cardsToDeal; i++)
@@ -47,19 +49,22 @@ public class CardDealer : MonoBehaviour
                 // Выбираем случайную карту из колоды
                 int randomIndex = Random.Range(0, deck.Count);
                 Card selectedCard = deck[randomIndex];
-                Debug.Log(selectedCard.Name);
+
                 // Удаляем карту из колоды
                 deck.RemoveAt(randomIndex);
 
-                // Создаем объект карты в позиции колоды
+                // Создаем объект карты
                 GameObject cardObject = Instantiate(cardPrefab, screenCardPos, Quaternion.identity);
                 cardObject.transform.SetParent(canvas.transform, false);
-                cardObject.GetComponent<CardInfoScr>().ShowCardInfo(selectedCard); // Отображаем информацию карты
-                
-                
+                cardObject.GetComponent<CardInfoScr>().ShowCardInfo(selectedCard);  // Отображаем информацию о карте
 
-                // Анимация перемещения карты в руку
-                StartCoroutine(MoveCardToHand(cardObject, handPosition));
+                // Определяем, в какую руку положить карту в зависимости от номера игрока
+                int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber - 1; // Индекс игрока (0 для первого, 1 для второго и т.д.)
+
+                if (playerIndex >= 0 && playerIndex < handPositions.Length)
+                {
+                    StartCoroutine(MoveCardToHand(cardObject, handPositions[playerIndex]));
+                }
 
                 // Задержка перед выдачей следующей карты
                 yield return new WaitForSeconds(animationDuration / 2);
@@ -67,7 +72,7 @@ public class CardDealer : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Не хватает карт в колоде для выдачи.");
+            Debug.LogWarning("Не хватает карт в колоде для раздачи.");
         }
     }
 
@@ -88,10 +93,10 @@ public class CardDealer : MonoBehaviour
         // Убедимся, что карта точно находится в нужной позиции
         card.transform.position = targetParent.position;
 
-        // Привязываем карту к родителю с HorizontalLayoutGroup
+        // Привязываем карту к родителю
         card.transform.SetParent(targetParent);
 
-        // Принудительно обновляем Layout после добавления новой карты
+        // Обновляем Layout для корректного размещения карт
         LayoutRebuilder.ForceRebuildLayoutImmediate(targetParent.GetComponent<RectTransform>());
     }
 }
