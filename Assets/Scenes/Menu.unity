@@ -2159,7 +2159,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.0004558309, y: 0.00016589256}
+  m_AnchoredPosition: {x: -0.0004558309, y: 0.0005477117}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1792290504
@@ -2344,7 +2344,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1838622529}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.9999723
+  m_Size: 0.9999914
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3095,6 +3095,7 @@ MonoBehaviour:
   RoomName: {fileID: 1905532541}
   itemPrefab: {fileID: 3795828556465789303, guid: 1ea74ecc01e43c3418b919b6252268ad, type: 3}
   content: {fileID: 1792290503}
+  player_pref: {fileID: 0}
 --- !u!114 &2024861968
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -6,41 +6,42 @@ using Photon.Pun;
 
 public class CardDealer : MonoBehaviourPun
 {
-    public Transform[] handPositions;  // Массив с позициями рук для каждого игрока
-    public int cardsToDeal = 5;        // Количество карт для раздачи
-    public float animationDuration = 0.5f; // Длительность анимации перемещения карты
-    public GameObject cardPrefab;      // Префаб карты для создания объектов
-    private List<Card> deck;           // Колода карт
+    public Transform[] playerHandPositions;  // Массив с позициями рук для отображения у других игроков
+    public Transform localHandPosition;      // Позиция руки для локального игрока (внизу экрана)
+    public Transform tablePosition;          // Позиция стола для карт игрока, который запросил раздачу
+    public int cardsToDeal = 5;              // Количество карт, которые нужно выдать
+    public float animationDuration = 0.5f;   // Длительность анимации перемещения карты
+    public GameObject cardPrefab;            // Префаб карты для создания объектов
+    private List<Card> deck;                 // Колода карт
     public Canvas canvas;
-    private Vector3 screenCardPos;
     private PhotonView photonView;
 
     private void Start()
     {
-        Vector3 worldPosition = handPositions[0].position; // Позиция первой руки
-        screenCardPos = Camera.main.WorldToScreenPoint(worldPosition);
         photonView = GetComponent<PhotonView>();
 
-        // Создаем колоду
+        // Создаем колоду карт
         deck = new List<Card>(CardsManager.AllCards);
+        localHandPosition = playerHandPositions[0];
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab))  // Кнопка для запуска раздачи карт
         {
-            photonView.RPC("Deal", RpcTarget.All);
+            photonView.RPC("StartDealing", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
         }
+        
+
     }
 
     [PunRPC]
-    public void Deal()
+    public void StartDealing(int requestingPlayerID)
     {
-        StartCoroutine(DealCards());
+        StartCoroutine(DealCards(requestingPlayerID));
     }
 
-    // Функция для раздачи карт
-    public IEnumerator DealCards()
+    public IEnumerator DealCards(int requestingPlayerID)
     {
         if (deck.Count >= cardsToDeal)
         {
@@ -49,24 +50,29 @@ public class CardDealer : MonoBehaviourPun
                 // Выбираем случайную карту из колоды
                 int randomIndex = Random.Range(0, deck.Count);
                 Card selectedCard = deck[randomIndex];
-
-                // Удаляем карту из колоды
                 deck.RemoveAt(randomIndex);
 
                 // Создаем объект карты
-                GameObject cardObject = Instantiate(cardPrefab, screenCardPos, Quaternion.identity);
-                cardObject.transform.SetParent(canvas.transform, false);
-                cardObject.GetComponent<CardInfoScr>().ShowCardInfo(selectedCard);  // Отображаем информацию о карте
+                GameObject cardObject = Instantiate(cardPrefab, canvas.transform, false);
+                cardObject.GetComponent<CardInfoScr>().ShowCardInfo(selectedCard); // Отображаем информацию карты
 
-                // Определяем, в какую руку положить карту в зависимости от номера игрока
-                int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber - 1; // Индекс игрока (0 для первого, 1 для второго и т.д.)
-
-                if (playerIndex >= 0 && playerIndex < handPositions.Length)
+                // Проверяем, какой игрок запросил карты
+                if (PhotonNetwork.LocalPlayer.ActorNumber == requestingPlayerID)
                 {
-                    StartCoroutine(MoveCardToHand(cardObject, handPositions[playerIndex]));
+                    // Если это локальный игрок, карты идут в его локальную руку
+                    StartCoroutine(MoveCardToHand(cardObject, localHandPosition));
+                }
+                else  // Если это другой игрок, карты идут в его столовую позицию
+                {
+                    foreach (var player in PhotonNetwork.PlayerList)
+                    {
+                        if(player.ActorNumber == requestingPlayerID)
+                            StartCoroutine(MoveCardToHand(cardObject, playerHandPositions[player.ActorNumber]));
+
+                    }
                 }
 
-                // Задержка перед выдачей следующей карты
+                // Задержка перед следующей картой
                 yield return new WaitForSeconds(animationDuration / 2);
             }
         }
@@ -76,13 +82,11 @@ public class CardDealer : MonoBehaviourPun
         }
     }
 
-    // Короутина для анимации перемещения карты в руку
     private IEnumerator MoveCardToHand(GameObject card, Transform targetParent)
     {
         float elapsedTime = 0;
         Vector3 startingPosition = card.transform.position;
 
-        // Анимируем перемещение карты к позиции руки
         while (elapsedTime < animationDuration)
         {
             card.transform.position = Vector3.Lerp(startingPosition, targetParent.position, (elapsedTime / animationDuration));
@@ -90,13 +94,10 @@ public class CardDealer : MonoBehaviourPun
             yield return null;
         }
 
-        // Убедимся, что карта точно находится в нужной позиции
         card.transform.position = targetParent.position;
-
-        // Привязываем карту к родителю
         card.transform.SetParent(targetParent);
 
-        // Обновляем Layout для корректного размещения карт
         LayoutRebuilder.ForceRebuildLayoutImmediate(targetParent.GetComponent<RectTransform>());
     }
 }
+

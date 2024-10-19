@@ -44,6 +44,20 @@ public class CardManagerScr : MonoBehaviour
         CardsManager.AllCards.Add(new Card("TradingPost", "picture/location/Green/tradingpost", "Green", 2));
         CardsManager.AllCards.Add(new Card("TradingPost", "picture/location/Green/tradingpost", "Green", 2));
         CardsManager.AllCards.Add(new Card("TradingPost", "picture/location/Green/tradingpost", "Green", 2));
+
+
+        //на удаление
+        CardsManager.AllCards.Add(new Card("Market", "picture/location/Green/market", "Green", 2));
+        CardsManager.AllCards.Add(new Card("Market", "picture/location/Green/market", "Green", 2));
+        CardsManager.AllCards.Add(new Card("Market", "picture/location/Green/market", "Green", 2));
+
+        CardsManager.AllCards.Add(new Card("Tavern", "picture/location/Green/tavern", "Green", 1));
+        CardsManager.AllCards.Add(new Card("Townhall", "picture/location/Green/townhall", "Green", 5));
+
+        CardsManager.AllCards.Add(new Card("TradingPost", "picture/location/Green/tradingpost", "Green", 2));
+        CardsManager.AllCards.Add(new Card("TradingPost", "picture/location/Green/tradingpost", "Green", 2));
+        CardsManager.AllCards.Add(new Card("TradingPost", "picture/location/Green/tradingpost", "Green", 2));
+
     }
   /*  public void AwakeBlue()
     {
