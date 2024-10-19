@@ -1372,11 +1372,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39109b40982766a458d3e09f200eec5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handPositions:
+  playerHandPositions:
   - {fileID: 213696161}
   - {fileID: 1337497203}
   - {fileID: 1967558128}
   - {fileID: 775807563}
+  localHandPosition: {fileID: 0}
+  tablePosition: {fileID: 0}
   cardsToDeal: 5
   animationDuration: 0.5
   cardPrefab: {fileID: 4031971454561691786, guid: f870d2cdb4fc4e8449120d89a9554d9b, type: 3}
@@ -1855,7 +1857,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textlastMessage: {fileID: 50921851}
   textMessageField: {fileID: 306702405}
-  dealer: {fileID: 0}
 --- !u!114 &914808580
 MonoBehaviour:
   m_ObjectHideFlags: 0
