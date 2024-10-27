@@ -6,12 +6,14 @@ using Photon.Pun;
 
 public class CardDealer : MonoBehaviourPun
 {
-    public Transform[] playerHandPositions;  // Массив с позициями рук для отображения у других игроков
-    public Transform localHandPosition;      // Позиция руки для локального игрока (внизу экрана)
+    public Transform playerHandPositions;  // Массив с позициями рук для отображения у других игроков
     public Transform tablePosition;          // Позиция стола для карт игрока, который запросил раздачу
-    public int cardsToDeal = 5;              // Количество карт, которые нужно выдать
+    public Transform cardParent;
+    public int cardsToDeal = 4;              // Количество карт, которые нужно выдать
     public float animationDuration = 0.5f;   // Длительность анимации перемещения карты
     public GameObject cardPrefab;            // Префаб карты для создания объектов
+    public GameObject cardPref;            // Префаб карты для создания объектов
+
     private List<Card> deck;                 // Колода карт
     public Canvas canvas;
     private PhotonView photonView;
@@ -22,19 +24,12 @@ public class CardDealer : MonoBehaviourPun
 
         // Создаем колоду карт
         deck = new List<Card>(CardsManager.AllCards);
-        localHandPosition = playerHandPositions[0];
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Tab))  // Кнопка для запуска раздачи карт
-        {
+    public void ClickStartButton(){
             photonView.RPC("StartDealing", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
-        }
-        
-
     }
-
+    
     [PunRPC]
     public void StartDealing(int requestingPlayerID)
     {
@@ -45,36 +40,32 @@ public class CardDealer : MonoBehaviourPun
     {
         if (deck.Count >= cardsToDeal)
         {
-            for (int i = 0; i < cardsToDeal; i++)
-            {
-                // Выбираем случайную карту из колоды
-                int randomIndex = Random.Range(0, deck.Count);
-                Card selectedCard = deck[randomIndex];
-                deck.RemoveAt(randomIndex);
 
-                // Создаем объект карты
-                GameObject cardObject = Instantiate(cardPrefab, canvas.transform, false);
-                cardObject.GetComponent<CardInfoScr>().ShowCardInfo(selectedCard); // Отображаем информацию карты
+            Debug.Log(requestingPlayerID);
+            Debug.Log(StartGame.players.Count);
+            var playerCurrent = StartGame.players[requestingPlayerID - 1];
+            foreach (var player in PhotonNetwork.PlayerList)
+                for (int i = 0; i < cardsToDeal; i++)
+                {
+                    // Выбираем случайную карту из колоды
+                    int randomIndex = Random.Range(0, deck.Count);
 
-                // Проверяем, какой игрок запросил карты
-                if (PhotonNetwork.LocalPlayer.ActorNumber == requestingPlayerID)
-                {
-                    // Если это локальный игрок, карты идут в его локальную руку
-                    StartCoroutine(MoveCardToHand(cardObject, localHandPosition));
-                }
-                else  // Если это другой игрок, карты идут в его столовую позицию
-                {
-                    foreach (var player in PhotonNetwork.PlayerList)
+                    Card selectedCard = deck[randomIndex];
+                    deck.RemoveAt(randomIndex);
+                    // Создаем объект карты
+                    GameObject cardObject = Instantiate(cardPrefab, cardParent.transform, false);
+                    cardObject.GetComponent<CardInfoScr>().ShowCardInfo(selectedCard); // Отображаем информацию карты
+                    playerCurrent.cards.Add(cardObject);
+                    // Проверяем, какой игрок запросил карты
+                    if (PhotonNetwork.LocalPlayer.ActorNumber == player.ActorNumber)
                     {
-                        if(player.ActorNumber == requestingPlayerID)
-                            StartCoroutine(MoveCardToHand(cardObject, playerHandPositions[player.ActorNumber]));
-
+                        // Если это локальный игрок, карты идут в его локальную руку
+                        StartCoroutine(MoveCardToHand(cardObject, playerHandPositions));
                     }
-                }
 
-                // Задержка перед следующей картой
-                yield return new WaitForSeconds(animationDuration / 2);
-            }
+                    // Задержка перед следующей картой
+                    yield return new WaitForSeconds(animationDuration / 2);
+                }
         }
         else
         {
