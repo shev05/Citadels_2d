@@ -24,6 +24,7 @@ public class CardDealer : MonoBehaviourPun
 
         // Создаем колоду карт
         deck = new List<Card>(CardsManager.AllCards);
+        Debug.Log("aaaaa" + deck.Count);
     }
 
     public void ClickStartButton(){
@@ -40,9 +41,6 @@ public class CardDealer : MonoBehaviourPun
     {
         if (deck.Count >= cardsToDeal)
         {
-
-            Debug.Log(requestingPlayerID);
-            Debug.Log(StartGame.players.Count);
             var playerCurrent = StartGame.players[requestingPlayerID - 1];
             foreach (var player in PhotonNetwork.PlayerList)
                 for (int i = 0; i < cardsToDeal; i++)

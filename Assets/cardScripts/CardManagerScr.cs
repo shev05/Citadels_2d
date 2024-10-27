@@ -3,19 +3,13 @@ using System.Collections.Generic;
 using Unity.Burst.Intrinsics;
 using UnityEngine;
 
-public struct Card{
-    public string Name;
+public class Card: BaseCard{
     public string Color;
-    public Sprite Logo;
     public int cost;
-    public string Ability;
-
-    public Card(string name, string logoPath,string color, int Cost, string ability = ""){
-        Name = name;
-        Logo = Resources.Load<Sprite>(logoPath);
+    public Card(string name, string logoPath,string color, int Cost, string ability = ""):
+     base(name, logoPath, ability){
         cost = Cost;
         Color = color;
-        Ability = ability;
     }
 }
 

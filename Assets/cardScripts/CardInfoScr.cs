@@ -6,12 +6,12 @@ using TMPro;
 
 public class CardInfoScr : MonoBehaviour
 {
-    public Card SelfCard;
+    public BaseCard SelfCard;
     public Image Logo;
     private GameObject EnlargedCardImage;
     private Image cardImage;
 
-    public void ShowCardInfo(Card card){
+    public void ShowCardInfo(BaseCard card){
         SelfCard = card;
         //transform.gameObject.GetComponent<Sprite>() = card.Logo;
         Logo.sprite = card.Logo;
