@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public class PhotonManager : MonoBehaviourPunCallbacks
 {
@@ -25,9 +26,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         PhotonNetwork.ConnectToRegion(region);
         Camera mainCamera = Camera.main;
 
-        if(SceneManager.GetActiveScene().name == "First")
+        /*if(SceneManager.GetActiveScene().name == "First")
         {
-            if(PhotonNetwork.CurrentRoom.PlayerCount == 1){
+            /*if(PhotonNetwork.CurrentRoom.PlayerCount == 1){
                 float screenHeight = mainCamera.orthographicSize * 2; 
                 Vector3 spawnPosition = new Vector3(0, -screenHeight / 2 + 0.5f, 0); 
                 player = PhotonNetwork.Instantiate(player_pref.name, spawnPosition, Quaternion.identity);
@@ -48,14 +49,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
                 Sprite newSprite = Resources.Load<Sprite>("picture/Player/player3");
                 player.GetComponent<SpriteRenderer>().sprite = newSprite;
             }
-            if(PhotonNetwork.CurrentRoom.PlayerCount == 4){
-                float screenWidth = mainCamera.orthographicSize * mainCamera.aspect * 2; 
-                Vector3 spawnPosition = new Vector3(screenWidth / 2 - 0.5f, 0, 0); 
-                player = PhotonNetwork.Instantiate(player_pref.name, spawnPosition, Quaternion.identity);
-                Sprite newSprite = Resources.Load<Sprite>("picture/Player/player4");
-                player.GetComponent<SpriteRenderer>().sprite = newSprite;
-            }
-        }
+            
+        }*/
     }
 
     public override void OnConnectedToMaster()

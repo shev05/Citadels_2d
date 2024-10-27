@@ -24,4 +24,10 @@ public class GameManager : MonoBehaviour
     {
         textlastMessage.text+= nick + ": " + message + "\n"; 
     }
+
+    /*[PunRPC]
+    public void DealCards()
+    {
+        StartCoroutine(dealer.DealCards());
+    }*/
 }
