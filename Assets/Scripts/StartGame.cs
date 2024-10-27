@@ -13,6 +13,7 @@ public class StartGame : MonoBehaviour
     [SerializeField] Button button;
     [SerializeField] TMP_Text[] money; 
     [SerializeField] TMP_Text[] cardCount; 
+    [SerializeField] GameObject[] kings;
 
     private void Start()
     {
@@ -26,18 +27,31 @@ public class StartGame : MonoBehaviour
     [PunRPC]
     void start(){
         RemoveButton();
+        int numberTable = 1;
         players = new List<Player>();
                 foreach (var player in PhotonNetwork.PlayerList){
                     if (PhotonNetwork.LocalPlayer.ActorNumber == player.ActorNumber)
-                        players.Add(new Player(player.ActorNumber, true));
+                        players.Add(new Player(player.ActorNumber, true, 0));
                     else
-                        players.Add(new Player(player.ActorNumber, false));
+                        players.Add(new Player(player.ActorNumber, false, numberTable++));
             }
         foreach (var m in money)
             m.text = "2";
         foreach (var c in cardCount)
             c.text = "4";
+        int randomIndex = UnityEngine.Random.Range(0, players.Count);
+        players[randomIndex].isKing = true;
+        Debug.Log("3245" + PhotonNetwork.LocalPlayer.ActorNumber);
+        Debug.Log("wlkdefndmk" + randomIndex);
+        foreach (var player in players)
+        {
+            Debug.Log(player.id + " " + player.numberTable);
+        }
+
+        kings[players[randomIndex].numberTable].SetActive(true);
     }
+
+
 
     void RemoveButton(){
         Destroy(button.gameObject);
