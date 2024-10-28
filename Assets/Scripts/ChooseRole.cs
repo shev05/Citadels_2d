@@ -10,17 +10,20 @@ public class ChooseRole : MonoBehaviour
     public GameObject panel;
     public GameObject cardPrefab;
     public GameObject cardField;
-    private List<RoleCard> roles;
+    static public List<RoleCard> roles;
     public List<RoleCard> removed = new List<RoleCard>();
     static public List<Player> players;
+    private PhotonView photonView;
+
 
 
 
     // Start is called before the first frame update
     void Start()
     {
+        photonView = GetComponent<PhotonView>();
         roles = new List<RoleCard>(RoleCardsManager.AllRoles);
-        Debug.Log("qqqqq" + roles.Count);
+
     }
 
     // Update is called once per frame
@@ -43,21 +46,32 @@ public class ChooseRole : MonoBehaviour
 
     void setupPanel(){
         foreach (var card in roles){
-            GameObject cardObject = Instantiate(cardPrefab, cardField.transform, false);
+            GameObject cardObject = Instantiate(cardPrefab, cardField.transform, false); // Создаем объект внутри канваса
             cardObject.GetComponent<CardInfoScr>().ShowCardInfo(card);
         }
     }
 
     public void startChoosing(){
-        RemoveRoles();
+        photonView.RPC("Choosing", RpcTarget.All);
+
+    }
+
+    [PunRPC]
+    public void Choosing(){
         int indexPlayer = 0;
         players = StartGame.players;
+        Debug.Log(StartGame.players.Count);
         foreach (var player in players)
             if(player.isKing)
                 indexPlayer = player.id;
         if (PhotonNetwork.LocalPlayer.ActorNumber == indexPlayer){
-            setupPanel();
-                panel.SetActive(true);
+            ActivateChoosing();
         }
+    }
+
+    public void ActivateChoosing(){
+        RemoveRoles();
+        setupPanel();
+        panel.SetActive(true);
     }
 }

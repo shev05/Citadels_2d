@@ -41,6 +41,7 @@ public class CardDealer : MonoBehaviourPun
     {
         if (deck.Count >= cardsToDeal)
         {
+            Debug.Log(StartGame.players.Count);
             var playerCurrent = StartGame.players[requestingPlayerID - 1];
             foreach (var player in PhotonNetwork.PlayerList)
                 for (int i = 0; i < cardsToDeal; i++)
