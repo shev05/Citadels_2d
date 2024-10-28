@@ -3,37 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Photon.Pun;
+using UnityEngine.UIElements;
 
 
-public class ChooseRoleCardScr : MonoBehaviour, IPointerClickHandler
+public class ChooseRoleCardScr : MonoBehaviour
 {
     // Start is called before the first frame update
-    private float lastClickTime;
-    private const float doubleClickThreshold = 0.3f; // Время между кликами для двойного клика
-    static public List<Player> players;
+   private NextPlayerRoleTurn cardSelectionManager;
 
-
-    public void OnPointerClick(PointerEventData eventData)
+    private void Start()
     {
-        if (Time.time - lastClickTime < doubleClickThreshold)
-        {
-            // Двойной клик
-            SelectCard();
-        }
-
-        lastClickTime = Time.time;
+        // Ищем `CardSelectionManager` в сцене
+        cardSelectionManager = FindObjectOfType<NextPlayerRoleTurn>();
     }
 
-    private void SelectCard()
+    private void OnMouseDown()
     {
-
-        Debug.Log("Карта выбрана двойным кликом: " + gameObject.GetComponent<CardInfoScr>().SelfCard.Name);
-        var card = gameObject.GetComponent<CardInfoScr>().SelfCard;
-        players = new List<Player>();
-                foreach (var player in PhotonNetwork.PlayerList){
-                    if(player.ActorNumber == PhotonNetwork.LocalPlayer.ActorNumber)
-                        players[player.ActorNumber].role = card;
-                }
-        
+        // Устанавливаем текущую карту как выделенную
+        cardSelectionManager.SetSelectedCard(gameObject);
     }
+            
+    
 }

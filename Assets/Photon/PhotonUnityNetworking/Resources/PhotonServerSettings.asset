@@ -44,6 +44,9 @@ MonoBehaviour:
   - Deal
   - StartDealing
   - start
+  - Choosing
+  - SelectCard
+  - NextPlayerTurn
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0
