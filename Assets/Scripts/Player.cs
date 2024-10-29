@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
 {
     //List <Player> players = new List<Player>();
     public int money;
-    public BaseCard role;
+    public RoleCard role;
    // List <Card> cards = new List<Card>();
     public int id;
     public int table = 1;
