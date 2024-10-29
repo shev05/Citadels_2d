@@ -47,6 +47,11 @@ MonoBehaviour:
   - Choosing
   - SelectCard
   - NextPlayerTurn
+  - Delete
+  - DeleteCard
+  - NextStep
+  - AddRolePlayer
+  - showRole
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0

@@ -9,7 +9,7 @@ public class NextPlayerRoleTurn : MonoBehaviour
 {
     public GameObject panel;
     public GameObject cardField;
-    private List<RoleCard> roles;
+    private List<RoleCard> _roles;
 
     public GameObject cardPrefab;
 
@@ -22,11 +22,13 @@ public class NextPlayerRoleTurn : MonoBehaviour
     // Список для сохранения оставшихся карт
     private List<GameObject> remainingCards;
     private PhotonView photonView;
+    GameTurnManager _gameTurnManager;
+    List<Player> players;
 
 
     private void Start()
     {
-
+        
         // Скрываем кнопку при запуске
         selectCardButton.gameObject.SetActive(false);
         
@@ -34,7 +36,7 @@ public class NextPlayerRoleTurn : MonoBehaviour
         selectCardButton.onClick.AddListener(OnSelectCardButtonClick);
 
         photonView = GetComponent<PhotonView>();
-
+        _gameTurnManager = FindObjectOfType<GameTurnManager>();
 
     }
 
@@ -92,11 +94,12 @@ public class NextPlayerRoleTurn : MonoBehaviour
             Debug.LogWarning("На объекте " + selectedCard.name + " нет компонента Renderer.");
         }
         int tableNumber = 0;
+        
         foreach(var player in StartGame.players)
             if(player.id == PhotonNetwork.LocalPlayer.ActorNumber){
-                player.role = roleCard;
                 tableNumber = player.id;
             }
+        photonView.RPC("AddRolePlayer", RpcTarget.All, tableNumber, roleCard.Name);
         tableNumber = NextTurn(tableNumber);
         List<string> remainingCardNames = new List<string>();
             foreach (var card in remainingCards)
@@ -118,9 +121,11 @@ public class NextPlayerRoleTurn : MonoBehaviour
         if(PhotonNetwork.LocalPlayer.ActorNumber == tableNumber){
             foreach(var player in StartGame.players)//проверка на полный обход
                 if(player.isKing)
-                    if(PhotonNetwork.LocalPlayer.ActorNumber == player.id)
+                    if(PhotonNetwork.LocalPlayer.ActorNumber == player.id){
+                        photonView.RPC("NextStep", RpcTarget.All);
                         return;
-            roles = ChooseRole.roles;
+                    }
+            _roles = ChooseRole.roles;
             GameObject[] initialCards = GameObject.FindGameObjectsWithTag("Rolecard");
             foreach (var card in initialCards)
             {
@@ -149,30 +154,40 @@ public class NextPlayerRoleTurn : MonoBehaviour
         return tableNumber;
     }
     void setupPanel(List<string> remainingCardNames){
-        RemoveRoles(remainingCardNames);
-        foreach (var card in roles){
+        Remove_roles(remainingCardNames);
+        foreach (var card in _roles){
             GameObject cardObject = Instantiate(cardPrefab, cardField.transform, false); // Создаем объект внутри канваса
             cardObject.GetComponent<CardInfoScr>().ShowCardInfo(card);
         }
     }
-    void RemoveRoles(List<string> remainingCardNames){
-        List<RoleCard> rolesToRemove = new List<RoleCard>();
+    void Remove_roles(List<string> remainingCardNames){
+        List<RoleCard> _rolesToRemove = new List<RoleCard>();
 
-        foreach (var role in roles)
+        foreach (var role in _roles)
         {
             if (!remainingCardNames.Contains(role.Name))
             {
-                rolesToRemove.Add(role);
+                _rolesToRemove.Add(role);
             }
         }
 
         // Затем удаляем их из исходного списка
-        foreach (var role in rolesToRemove)
+        foreach (var role in _rolesToRemove)
         {
-            roles.Remove(role);
+            _roles.Remove(role);
         }
-
-
     }
-    
+    [PunRPC]
+    void NextStep(){
+        _gameTurnManager.NextTurn();
+    }
+    [PunRPC]
+    void AddRolePlayer(int id, string name){
+        players = StartGame.players;
+        List<RoleCard> roles = ChooseRole.roles;
+        foreach (var role in roles){
+            if(role.Name == name)
+                players[id - 1].role = role;
+        }
+    }
 }

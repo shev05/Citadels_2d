@@ -13,6 +13,8 @@ public class CardDealer : MonoBehaviourPun
     public float animationDuration = 0.5f;   // Длительность анимации перемещения карты
     public GameObject cardPrefab;            // Префаб карты для создания объектов
     public GameObject cardPref;            // Префаб карты для создания объектов
+    List<Player> players;
+    GameObject cardObject;
 
     private List<Card> deck;                 // Колода карт
     public Canvas canvas;
@@ -39,25 +41,21 @@ public class CardDealer : MonoBehaviourPun
 
     public IEnumerator DealCards(int requestingPlayerID)
     {
+        players = StartGame.players;
         if (deck.Count >= cardsToDeal)
         {
             Debug.Log(StartGame.players.Count);
-            var playerCurrent = StartGame.players[requestingPlayerID - 1];
-            foreach (var player in PhotonNetwork.PlayerList)
+            foreach (var player in players)
                 for (int i = 0; i < cardsToDeal; i++)
                 {
-                    // Выбираем случайную карту из колоды
-                    int randomIndex = Random.Range(0, deck.Count);
-
-                    Card selectedCard = deck[randomIndex];
-                    deck.RemoveAt(randomIndex);
-                    // Создаем объект карты
-                    GameObject cardObject = Instantiate(cardPrefab, cardParent.transform, false);
-                    cardObject.GetComponent<CardInfoScr>().ShowCardInfo(selectedCard); // Отображаем информацию карты
-                    playerCurrent.cards.Add(cardObject);
-                    // Проверяем, какой игрок запросил карты
-                    if (PhotonNetwork.LocalPlayer.ActorNumber == player.ActorNumber)
+                    if (PhotonNetwork.LocalPlayer.ActorNumber == player.id)
                     {
+                        // Выбираем случайную карту из колоды
+                        int randomIndex = Random.Range(0, deck.Count);
+
+                        photonView.RPC("DeleteCard", RpcTarget.All, randomIndex, player.id);
+                        // Проверяем, какой игрок запросил карты
+                    
                         // Если это локальный игрок, карты идут в его локальную руку
                         StartCoroutine(MoveCardToHand(cardObject, playerHandPositions));
                     }
@@ -88,6 +86,16 @@ public class CardDealer : MonoBehaviourPun
         card.transform.SetParent(targetParent);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(targetParent.GetComponent<RectTransform>());
+    }
+    [PunRPC]
+    void DeleteCard(int indexDelete, int id){
+        Debug.Log(indexDelete + " ХУЙ");
+        Card selectedCard = deck[indexDelete];
+        deck.RemoveAt(indexDelete);
+        // Создаем объект карты
+        cardObject = Instantiate(cardPrefab, cardParent.transform, false);
+        cardObject.GetComponent<CardInfoScr>().ShowCardInfo(selectedCard); // Отображаем информацию карты
+        players[id - 1].cards.Add(cardObject);
     }
 }
 
