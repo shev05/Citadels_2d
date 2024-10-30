@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +11,17 @@ public class GameTurnManager : MonoBehaviour
 {
     private List<Player> _players;
     private List<Player> turnBasedPlayerList;
+    public List<TMP_Text> moneyCounters;
     public List<TMP_Text> roleTexts;
     private PhotonView photonView;
     public Button nextTurnButton;
+    public GameObject choisePanel;
+    public GameObject cardChoisePanel;
+    public GameObject choiseCardPrefab;
     private int tableNumber;
 
-    private int activePlayer = 0;
+
+    public static int activePlayer = 0;
 
     
     // Start is called before the first frame update
@@ -51,11 +57,40 @@ public class GameTurnManager : MonoBehaviour
     [PunRPC]
     private void TurnStep(){
         if (activePlayer >= turnBasedPlayerList.Count) return;
-        var player = turnBasedPlayerList[activePlayer++];
+        var player = turnBasedPlayerList[activePlayer];
         tableNumber = player.numberTable;
             if(player.id == PhotonNetwork.LocalPlayer.ActorNumber){
-                nextTurnButton.gameObject.SetActive(true);
                 photonView.RPC("showRole", RpcTarget.All, player.role.Name);
+                choisePanel.SetActive(true);
             }
+    }
+
+    [PunRPC]
+    private void ChooseMoney(){
+        var player = turnBasedPlayerList[activePlayer++];
+        player.money += 2;
+        moneyCounters[tableNumber].text = player.money.ToString();
+        nextTurnButton.gameObject.SetActive(true);
+    }
+
+    private void ChooseCard(){
+        choisePanel.SetActive(false);
+        cardChoisePanel.SetActive(true);
+        for (int i = 0; i <= 1; i++){   
+            int randomIndex = UnityEngine.Random.Range(0, CardDealer.deck.Count);
+            Card selectedCard = CardDealer.deck[randomIndex];
+            var cardObject = Instantiate(choiseCardPrefab, cardChoisePanel.transform.GetChild(0).transform, false);
+            cardObject.GetComponent<CardInfoScr>().ShowCardInfo(selectedCard);
+        }
+        
+    }
+
+    public void MoneyButton_Click(){
+        photonView.RPC("ChooseMoney", RpcTarget.All);
+        choisePanel.SetActive(false);
+    }
+
+    public void CardButton_Click(){
+        ChooseCard();
     }
 }
