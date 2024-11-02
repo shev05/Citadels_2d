@@ -52,6 +52,8 @@ public class GameTurnManager : MonoBehaviour
     public void ButtonNextTurn_Click(){
         photonView.RPC("TurnStep", RpcTarget.All);
         nextTurnButton.gameObject.SetActive(false);
+        turnBasedPlayerList[activePlayer - 1].isActive = false;
+        turnBasedPlayerList[activePlayer - 1].placeableCardCount = 1;
     }
 
     [PunRPC]
@@ -70,7 +72,7 @@ public class GameTurnManager : MonoBehaviour
         var player = turnBasedPlayerList[activePlayer++];
         player.money += 2;
         moneyCounters[tableNumber].text = player.money.ToString();
-        nextTurnButton.gameObject.SetActive(true);
+        player.isActive = true;
     }
 
     private void ChooseCard(){
@@ -82,12 +84,15 @@ public class GameTurnManager : MonoBehaviour
             var cardObject = Instantiate(choiseCardPrefab, cardChoisePanel.transform.GetChild(0).transform, false);
             cardObject.GetComponent<CardInfoScr>().ShowCardInfo(selectedCard);
         }
+
         
     }
 
     public void MoneyButton_Click(){
         photonView.RPC("ChooseMoney", RpcTarget.All);
         choisePanel.SetActive(false);
+        nextTurnButton.gameObject.SetActive(true);
+
     }
 
     public void CardButton_Click(){

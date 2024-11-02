@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -9,22 +11,28 @@ public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler,
     private List<CardMovementScr> placedCards = new List<CardMovementScr>();
     private CardMovementScr cardHovered = null;
     private string swappableField = "RoleField";
+    List<Player> players;
+    public TMP_Text[] money_player;
+    public TMP_Text[] card_player; 
+    PhotonView photonView;
+
+    void Start(){
+        photonView = GetComponent<PhotonView>();
+    }
+
     public void OnDrop(PointerEventData eventData)
     {
+        players = StartGame.players;
+        int indexPlayer = PhotonNetwork.LocalPlayer.ActorNumber - 1;
         CardMovementScr card = eventData.pointerDrag.GetComponent<CardMovementScr>();
+        int cardIndex = players[indexPlayer].cards.FindIndex(obj => obj == eventData.pointerDrag.gameObject);
+        var chosenCard = (Card)eventData.pointerDrag.GetComponent<CardInfoScr>().SelfCard;
         DropPlacerCScr previousContainer = card.DefaultParent.GetComponent<DropPlacerCScr>();
         DropPlacerCScr targetContainer = GetComponent<DropPlacerCScr>();
-        
-
-        if ((previousContainer.CompareTag("HandField") && targetContainer.CompareTag("RoleCardField")) ||
-             (previousContainer.CompareTag("RoleCardField") && (targetContainer.CompareTag("HandField") || 
-                                                                targetContainer.CompareTag("PlayingField")))||
-             (previousContainer.name == swappableField && targetContainer.CompareTag("RoleCardField")) ||
-             previousContainer.CompareTag("PlayingField") && targetContainer.CompareTag("RoleCardField"))
-        {
-            Debug.Log(targetContainer.name + targetContainer.tag + placedCards.Count);
+        if(!players[indexPlayer].isActive ||
+         players[indexPlayer].placeableCardCount == 0 ||
+         players[indexPlayer].money < chosenCard.cost)
             return;
-        }
         
         if (card)
         {
@@ -42,6 +50,8 @@ public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler,
                     //Debug.Log(card.name);
                     cardHovered = card;
                 }
+                players[indexPlayer].placeableCardCount -= 1;
+                photonView.RPC("CardDroped", RpcTarget.All, indexPlayer, chosenCard.cost, cardIndex);
             }
             else if (cardHovered != null)
             {
@@ -134,5 +144,14 @@ public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler,
             hoveredCardParent.GetComponent<DropPlacerCScr>().AddCardToGroup(newCard);
             hoveredCardParent.GetComponent<DropPlacerCScr>().RemoveCardFromGroup(cardHovered);
         }
+    }
+
+    [PunRPC]
+    void CardDroped(int indexPlayer, int cost, int cardIndex){
+        players = StartGame.players;
+        players[indexPlayer].cards.RemoveAt(cardIndex);
+        players[indexPlayer].money -= cost;
+        money_player[players[indexPlayer].numberTable].text = players[indexPlayer].money.ToString();
+        card_player[players[indexPlayer].numberTable].text = players[indexPlayer].cards.Count.ToString();
     }
 }
