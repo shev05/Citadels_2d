@@ -343,6 +343,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxCards: 15
+  money_player: []
+  card_player: []
 --- !u!114 &48688074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1314,6 +1316,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxCards: 15
+  money_player:
+  - {fileID: 465741319}
+  - {fileID: 2002988840}
+  - {fileID: 369572311}
+  - {fileID: 1936881448}
+  card_player:
+  - {fileID: 1510714424}
+  - {fileID: 225592924}
+  - {fileID: 164287067}
+  - {fileID: 1632852564}
 --- !u!114 &213696166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3620,7 +3632,6 @@ GameObject:
   - component: {fileID: 775807563}
   - component: {fileID: 775807568}
   - component: {fileID: 775807567}
-  - component: {fileID: 775807565}
   - component: {fileID: 775807564}
   - component: {fileID: 775807569}
   m_Layer: 5
@@ -3671,19 +3682,6 @@ MonoBehaviour:
   sceneViewId: 7
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &775807565
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 775807562}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b456dad2eb4eb64488c0809c99b81fb6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxCards: 15
 --- !u!114 &775807567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4878,6 +4876,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxCards: 1
+  money_player: []
+  card_player: []
 --- !u!1 &1118625773
 GameObject:
   m_ObjectHideFlags: 0
@@ -5623,7 +5623,6 @@ GameObject:
   - component: {fileID: 1337497203}
   - component: {fileID: 1337497208}
   - component: {fileID: 1337497207}
-  - component: {fileID: 1337497205}
   - component: {fileID: 1337497204}
   - component: {fileID: 1337497209}
   m_Layer: 5
@@ -5674,19 +5673,6 @@ MonoBehaviour:
   sceneViewId: 5
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1337497205
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1337497202}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b456dad2eb4eb64488c0809c99b81fb6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxCards: 15
 --- !u!114 &1337497207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5743,7 +5729,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 1
+  m_Spacing: 2
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
@@ -8158,6 +8144,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxCards: 5
+  money_player: []
+  card_player: []
 --- !u!114 &1898512576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8436,7 +8424,6 @@ GameObject:
   - component: {fileID: 1967558133}
   - component: {fileID: 1967558132}
   - component: {fileID: 1967558131}
-  - component: {fileID: 1967558130}
   - component: {fileID: 1967558129}
   m_Layer: 5
   m_Name: Hand 3 player
@@ -8486,19 +8473,6 @@ MonoBehaviour:
   sceneViewId: 6
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1967558130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1967558127}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b456dad2eb4eb64488c0809c99b81fb6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxCards: 15
 --- !u!114 &1967558131
 MonoBehaviour:
   m_ObjectHideFlags: 0
