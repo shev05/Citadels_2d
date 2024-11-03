@@ -57,7 +57,7 @@ public class TurnChoiseCard : MonoBehaviour
         var player = StartGame.players[id - 1];
         var newCard = Instantiate(cardPrefab, hand.transform, false);
         newCard.GetComponent<CardInfoScr>().ShowCardInfo(CardDealer.deck[index]);
-        player.cards.Add(newCard);
+        player.cards.Add(CardDealer.deck[index]);
         cardCount[player.numberTable].text = player.cards.Count.ToString();
         CardDealer.deck.RemoveAt(index);
         GameTurnManager.activePlayer++;
