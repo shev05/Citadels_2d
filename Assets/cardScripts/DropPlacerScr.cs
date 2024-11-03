@@ -179,7 +179,7 @@ public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler,
         otherTableCard.transform.localPosition = Vector3.zero;
         otherTableCard.transform.localScale = new Vector3(1, 1, 1);
         if (players[indexPlayer].numberTable == 2) otherTableCard.transform.rotation = Quaternion.Euler(0, 0, 90);
-        if (players[indexPlayer].numberTable == 3) otherTableCard.transform.rotation = Quaternion.Euler(0, 0, 0);
-        if (players[indexPlayer].numberTable == 4) otherTableCard.transform.rotation = Quaternion.Euler(0, 0, 180);
+        if (players[indexPlayer].numberTable == 3) otherTableCard.transform.rotation = Quaternion.Euler(0, 0, 180);
+        
     }
 }

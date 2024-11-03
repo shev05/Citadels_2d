@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Citadels.sln"
+    "dotnet.defaultSolution": "Citadels_2d.sln"
 }
