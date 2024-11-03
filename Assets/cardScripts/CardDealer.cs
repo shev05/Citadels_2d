@@ -88,14 +88,13 @@ public class CardDealer : MonoBehaviourPun
     }
     [PunRPC]
     void DealingCard(int indexDelete, int id){
-        Debug.Log(indexDelete + " ХУЙ");
         Card selectedCard = deck[indexDelete];
         deck.RemoveAt(indexDelete);
         // Создаем объект карты
         cardObject = Instantiate(cardPrefab, cardParent.transform, false);
         cardObject.GetComponent<CardInfoScr>().ShowCardInfo(selectedCard);
 
-        players[id - 1].cards.Add(cardObject);
+        players[id - 1].cards.Add(selectedCard);
         if(id != PhotonNetwork.LocalPlayer.ActorNumber)
             Destroy(cardObject);
     }

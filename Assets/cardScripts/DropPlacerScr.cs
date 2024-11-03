@@ -10,6 +10,8 @@ public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler,
     public int maxCards = 15;
     private List<CardMovementScr> placedCards = new List<CardMovementScr>();
     private CardMovementScr cardHovered = null;
+    public GameObject rotatedCard;
+    public List<GameObject> hands;
     private string swappableField = "RoleField";
     List<Player> players;
     public TMP_Text[] money_player;
@@ -25,8 +27,8 @@ public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler,
         players = StartGame.players;
         int indexPlayer = PhotonNetwork.LocalPlayer.ActorNumber - 1;
         CardMovementScr card = eventData.pointerDrag.GetComponent<CardMovementScr>();
-        int cardIndex = players[indexPlayer].cards.FindIndex(obj => obj == eventData.pointerDrag.gameObject);
         var chosenCard = (Card)eventData.pointerDrag.GetComponent<CardInfoScr>().SelfCard;
+        int cardIndex = players[indexPlayer].cards.FindIndex(obj => obj == chosenCard);
         DropPlacerCScr previousContainer = card.DefaultParent.GetComponent<DropPlacerCScr>();
         DropPlacerCScr targetContainer = GetComponent<DropPlacerCScr>();
         if(!players[indexPlayer].isActive ||
@@ -51,6 +53,8 @@ public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler,
                     cardHovered = card;
                 }
                 players[indexPlayer].placeableCardCount -= 1;
+                photonView.RPC("DisplayCardOnOtherTables", RpcTarget.Others, indexPlayer,
+                    cardIndex);
                 photonView.RPC("CardDroped", RpcTarget.All, indexPlayer, chosenCard.cost, cardIndex);
             }
             else if (cardHovered != null)
@@ -153,5 +157,29 @@ public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler,
         players[indexPlayer].money -= cost;
         money_player[players[indexPlayer].numberTable].text = players[indexPlayer].money.ToString();
         card_player[players[indexPlayer].numberTable].text = players[indexPlayer].cards.Count.ToString();
+    }
+    
+    [PunRPC]
+    void DisplayCardOnOtherTables(int indexPlayer, int cardIndex)
+    {
+        players = StartGame.players;
+        GameObject otherTableCard;
+        // Получаем оригинальную карту по индексу из списка игрока
+        var originalCard = players[indexPlayer].cards[cardIndex];
+        // Создаем отображение другой версии карты на столах других игроков
+        otherTableCard = Instantiate(rotatedCard);
+        // Настраиваем отображаемую карту
+        otherTableCard.GetComponent<CardInfoScr>().ShowCardInfo(originalCard);
+
+        // Определяем стол для размещения карты
+        Transform otherPlayerTableTransform = hands[players[indexPlayer].numberTable].transform;
+
+        // Настройка позиции и привязки к столу
+        otherTableCard.transform.SetParent(otherPlayerTableTransform);
+        otherTableCard.transform.localPosition = Vector3.zero;
+        otherTableCard.transform.localScale = new Vector3(1, 1, 1);
+        if (players[indexPlayer].numberTable == 2) otherTableCard.transform.rotation = Quaternion.Euler(0, 0, 90);
+        if (players[indexPlayer].numberTable == 3) otherTableCard.transform.rotation = Quaternion.Euler(0, 0, 0);
+        if (players[indexPlayer].numberTable == 4) otherTableCard.transform.rotation = Quaternion.Euler(0, 0, 180);
     }
 }
