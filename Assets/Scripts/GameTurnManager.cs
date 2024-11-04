@@ -42,7 +42,7 @@ public class GameTurnManager : MonoBehaviour
     {
         _players = StartGame.players;
         turnBasedPlayerList = _players.OrderBy(turn => turn.role.TurnNum).ToList();
-
+        photonView.RPC("ZeroActivePlayer", RpcTarget.All);
         TurnStep();
     }
 
@@ -68,6 +68,7 @@ public class GameTurnManager : MonoBehaviour
 
     [PunRPC]
     private void TurnStep(){
+        
         var player = turnBasedPlayerList[activePlayer];
         tableNumber = player.numberTable;
             if(player.id == PhotonNetwork.LocalPlayer.ActorNumber){
@@ -106,5 +107,11 @@ public class GameTurnManager : MonoBehaviour
 
     public void CardButton_Click(){
         ChooseCard();
+    }
+
+    [PunRPC]
+    public void ZeroActivePlayer()
+    {
+        activePlayer = 0;
     }
 }
