@@ -62,6 +62,7 @@ public class NextPlayerRoleTurn : MonoBehaviour
     // Метод, который вызывается при нажатии кнопки
     private void OnSelectCardButtonClick()
     {
+        cardsOnField = new List<GameObject>();
          // Инициализация карт на поле
         GameObject[] initialCards = GameObject.FindGameObjectsWithTag("Rolecard");
         foreach (var card in initialCards)
@@ -111,6 +112,7 @@ public class NextPlayerRoleTurn : MonoBehaviour
         selectCardButton.gameObject.SetActive(false);
         panel.SetActive(false);
         string[] remainingCardNamesArray = remainingCardNames.ToArray();
+        ClearHand();
         photonView.RPC("NextPlayerTurn", RpcTarget.AllBuffered, tableNumber, remainingCardNamesArray);
     }
 
@@ -154,6 +156,15 @@ public class NextPlayerRoleTurn : MonoBehaviour
         return tableNumber;
     }
     void setupPanel(List<string> remainingCardNames){
+        foreach (var item in remainingCardNames)
+        {
+            Debug.Log(item + "x");
+        }
+
+        foreach (var item in _roles)
+        {
+            Debug.Log(item.Name + "z");
+        }
         Remove_roles(remainingCardNames);
         foreach (var card in _roles){
             GameObject cardObject = Instantiate(cardPrefab, cardField.transform, false); // Создаем объект внутри канваса
@@ -188,6 +199,14 @@ public class NextPlayerRoleTurn : MonoBehaviour
         foreach (var role in roles){
             if(role.Name == name)
                 players[id - 1].role = role;
+        }
+    }
+    
+    public void ClearHand()
+    {
+        foreach (Transform role in cardField.transform)
+        {
+            Destroy(role.gameObject);
         }
     }
 }

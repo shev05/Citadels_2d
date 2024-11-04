@@ -48,10 +48,6 @@ public class ChooseRole : MonoBehaviour
     }
 
     void setupPanel(){
-        foreach (Transform role in cardField.transform)
-        {
-            Destroy(role.gameObject);
-        }
         foreach (var card in roles){
             GameObject cardObject = Instantiate(cardPrefab, cardField.transform, false); // Создаем объект внутри канваса
             cardObject.GetComponent<CardInfoScr>().ShowCardInfo(card);
@@ -67,6 +63,7 @@ public class ChooseRole : MonoBehaviour
         int indexPlayer = 0;
         players = StartGame.players;
         Debug.Log(StartGame.players.Count);
+        roles = new List<RoleCard>(RoleCardsManager.AllRoles);
         foreach (var player in players)
             if(player.isKing)
                 indexPlayer = player.id;
@@ -77,7 +74,6 @@ public class ChooseRole : MonoBehaviour
 
     public void ActivateChoosing()
     {
-        roles = new List<RoleCard>(RoleCardsManager.AllRoles);
         photonView.RPC("DeactivateRemovedCardSlots", RpcTarget.All);
         RemoveRoles();
         setupPanel();
@@ -106,4 +102,6 @@ public class ChooseRole : MonoBehaviour
     {
         foreach(var slot in removedCardSlots) slot.SetActive(false);
     }
+
+    
 }
