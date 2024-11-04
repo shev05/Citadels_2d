@@ -18,6 +18,7 @@ public class GameTurnManager : MonoBehaviour
     public GameObject choisePanel;
     public GameObject cardChoisePanel;
     public GameObject choiseCardPrefab;
+    private ChooseRole _chooseRole;
     private int tableNumber;
 
 
@@ -28,6 +29,7 @@ public class GameTurnManager : MonoBehaviour
     void Start()
     {
         photonView = GetComponent<PhotonView>();
+        _chooseRole = FindObjectOfType<ChooseRole>();
     }
 
     // Update is called once per frame
@@ -50,6 +52,14 @@ public class GameTurnManager : MonoBehaviour
     }
 
     public void ButtonNextTurn_Click(){
+        Debug.Log(activePlayer);
+        if (activePlayer >= turnBasedPlayerList.Count)
+        {
+            activePlayer = 0;
+            _chooseRole.startChoosing();
+            nextTurnButton.gameObject.SetActive(false);
+            return;
+        }
         photonView.RPC("TurnStep", RpcTarget.All);
         nextTurnButton.gameObject.SetActive(false);
         turnBasedPlayerList[activePlayer - 1].isActive = false;
@@ -58,7 +68,6 @@ public class GameTurnManager : MonoBehaviour
 
     [PunRPC]
     private void TurnStep(){
-        if (activePlayer >= turnBasedPlayerList.Count) return;
         var player = turnBasedPlayerList[activePlayer];
         tableNumber = player.numberTable;
             if(player.id == PhotonNetwork.LocalPlayer.ActorNumber){
