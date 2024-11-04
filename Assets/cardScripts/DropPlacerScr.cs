@@ -11,8 +11,8 @@ public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler,
     private List<CardMovementScr> placedCards = new List<CardMovementScr>();
     private CardMovementScr cardHovered = null;
     public GameObject rotatedCard;
+    public GameObject tempCard;
     public List<GameObject> hands;
-    private string swappableField = "RoleField";
     List<Player> players;
     public TMP_Text[] money_player;
     public TMP_Text[] card_player; 
@@ -47,21 +47,11 @@ public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler,
             {
                 // Добавляем карточку, если не превышен лимит
                 AddCardToGroup(card);
-                if (cardHovered == null && targetContainer.name == swappableField && previousContainer.CompareTag("RoleCardField"))
-                {
-                    //Debug.Log(card.name);
-                    cardHovered = card;
-                }
+                
                 players[indexPlayer].placeableCardCount -= 1;
                 photonView.RPC("DisplayCardOnOtherTables", RpcTarget.Others, indexPlayer,
                     cardIndex);
                 photonView.RPC("CardDroped", RpcTarget.All, indexPlayer, chosenCard.cost, cardIndex);
-            }
-            else if (cardHovered != null)
-            {
-                Debug.Log(cardHovered.name);
-                SwapCards(card);
-                Debug.Log(cardHovered.name);
             }
         }
     }
@@ -110,43 +100,6 @@ public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler,
         {
             placedCards.Remove(card); // Удаляем карточку из списка, если она там есть
             //Debug.Log("Объект удалён из группы.");
-        }
-    }
-    
-    private void SwapCards(CardMovementScr newCard)
-    {
-        // Убираем старую карточку из списка
-        Transform newCardParent = newCard.DefaultParent;
-        Transform hoveredCardParent = cardHovered.DefaultParent;
-
-        // Запоминаем текущие позиции
-        Vector3 newCardPosition = newCard.transform.localPosition;
-        Vector3 hoveredCardPosition = cardHovered.transform.localPosition;
-
-        // Меняем карточки местами
-        newCard.transform.SetParent(hoveredCardParent);
-        newCard.transform.localPosition = hoveredCardPosition;
-
-        cardHovered.transform.SetParent(newCardParent);
-        cardHovered.transform.localPosition = newCardPosition;
-
-        // Обновляем родительский объект для каждой карточки
-        newCard.DefaultParent = hoveredCardParent;
-        cardHovered.DefaultParent = newCardParent;
-
-        cardHovered = newCard;
-
-        // Обновляем группы карточек в родителях
-        if (newCardParent.GetComponent<DropPlacerCScr>())
-        {
-            newCardParent.GetComponent<DropPlacerCScr>().AddCardToGroup(cardHovered);
-            newCardParent.GetComponent<DropPlacerCScr>().RemoveCardFromGroup(newCard);
-        }
-
-        if (hoveredCardParent.GetComponent<DropPlacerCScr>())
-        {
-            hoveredCardParent.GetComponent<DropPlacerCScr>().AddCardToGroup(newCard);
-            hoveredCardParent.GetComponent<DropPlacerCScr>().RemoveCardFromGroup(cardHovered);
         }
     }
 

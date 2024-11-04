@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class CardMovementScr : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -11,6 +13,7 @@ public class CardMovementScr : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     Vector3 offset;
     public Transform DefaultParent, DefaultTempCardParent;
     GameObject TempCardGO;
+    private List<Player> _players;
 
 
     private void Awake()
@@ -22,10 +25,18 @@ public class CardMovementScr : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        _players = StartGame.players;
+        if (_players[PhotonNetwork.LocalPlayer.ActorNumber - 1].isActive == false) 
+            TempCardGO.GetComponent<Image>().color = new Color(1f, 0f, 0f, 0.5f);
+        else
+        {
+            TempCardGO.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0.5f);
+        }
         offset = transform.position - MainCamera.ScreenToWorldPoint(eventData.position);
 
         DefaultParent = DefaultTempCardParent = transform.parent;
 
+        TempCardGO.GetComponent<Image>().sprite = eventData.pointerDrag.GetComponent<CardInfoScr>().Logo.sprite;
         TempCardGO.transform.SetParent(DefaultParent);
         TempCardGO.transform.SetSiblingIndex(transform.GetSiblingIndex());
 

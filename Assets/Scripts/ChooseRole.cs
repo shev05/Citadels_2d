@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,6 +12,7 @@ public class ChooseRole : MonoBehaviour
     public GameObject cardPrefab;
     public GameObject cardField;
     static public List<RoleCard> roles;
+    public List<GameObject> removedCardSlots;
     public List<RoleCard> removed = new List<RoleCard>();
     static public List<Player> players;
     private PhotonView photonView;
@@ -23,7 +25,6 @@ public class ChooseRole : MonoBehaviour
     {
         photonView = GetComponent<PhotonView>();
         roles = new List<RoleCard>(RoleCardsManager.AllRoles);
-
     }
 
     // Update is called once per frame
@@ -42,9 +43,15 @@ public class ChooseRole : MonoBehaviour
         int randomIndexThird = UnityEngine.Random.Range(0, roles.Count);
         removed.Add(roles[randomIndexThird]);
         roles.RemoveAt(randomIndexThird);
+        string[] removedCardNames = removed.Select(card => card.Name).ToArray();
+        photonView.RPC("ActivateRemovedCardSlots", RpcTarget.All, removedCardNames);
     }
 
     void setupPanel(){
+        foreach (Transform role in cardField.transform)
+        {
+            Destroy(role.gameObject);
+        }
         foreach (var card in roles){
             GameObject cardObject = Instantiate(cardPrefab, cardField.transform, false); // Создаем объект внутри канваса
             cardObject.GetComponent<CardInfoScr>().ShowCardInfo(card);
@@ -53,7 +60,6 @@ public class ChooseRole : MonoBehaviour
 
     public void startChoosing(){
         photonView.RPC("Choosing", RpcTarget.All);
-
     }
 
     [PunRPC]
@@ -69,9 +75,35 @@ public class ChooseRole : MonoBehaviour
         }
     }
 
-    public void ActivateChoosing(){
+    public void ActivateChoosing()
+    {
+        roles = new List<RoleCard>(RoleCardsManager.AllRoles);
+        photonView.RPC("DeactivateRemovedCardSlots", RpcTarget.All);
         RemoveRoles();
         setupPanel();
         panel.SetActive(true);
+    }
+
+    [PunRPC]
+    public void ActivateRemovedCardSlots(string[] removedCardNames)
+    {
+        for (int i = 0; i < removedCardSlots.Count && i < removedCardNames.Length; i++)
+        {
+            var card = RoleCardsManager.AllRoles.Find(r => r.Name == removedCardNames[i]);
+            if (card != null)
+            {
+                if (i != 0)
+                {
+                    removedCardSlots[i].GetComponent<CardInfoScr>().ShowCardInfo(card);
+                }
+                removedCardSlots[i].SetActive(true);
+            }
+        }
+    }
+    
+    [PunRPC]
+    public void DeactivateRemovedCardSlots()
+    {
+        foreach(var slot in removedCardSlots) slot.SetActive(false);
     }
 }
