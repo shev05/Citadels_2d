@@ -19,7 +19,10 @@ public class GameTurnManager : MonoBehaviour
     public GameObject cardChoisePanel;
     public GameObject choiseCardPrefab;
     private ChooseRole _chooseRole;
+    public GameObject KillPanel;
     private int tableNumber;
+    public List<GameObject> ButtonRole; 
+
 
 
     public static int activePlayer = 0;
@@ -47,15 +50,22 @@ public class GameTurnManager : MonoBehaviour
     }
 
     [PunRPC]
-    void showRole(string role){
-        roleTexts[tableNumber].text = role;
+    void ShowRole(string role, bool isKill){
+        if(!isKill){
+            roleTexts[tableNumber].text = "<s>" + role + "</s>";
+            activePlayer++;
+        }
+        else
+            roleTexts[tableNumber].text = role;
+
     }
 
     public void ButtonNextTurn_Click(){
-        Debug.Log(activePlayer);
+        Debug.Log(activePlayer + "ББ");
+
         if (activePlayer >= turnBasedPlayerList.Count)
         {
-            activePlayer = 0;
+            photonView.RPC("PassiveBool", RpcTarget.All);
             _chooseRole.startChoosing();
             nextTurnButton.gameObject.SetActive(false);
             return;
@@ -67,13 +77,23 @@ public class GameTurnManager : MonoBehaviour
     }
 
     [PunRPC]
-    private void TurnStep(){
-        
+    private void TurnStep(){  
         var player = turnBasedPlayerList[activePlayer];
         tableNumber = player.numberTable;
             if(player.id == PhotonNetwork.LocalPlayer.ActorNumber){
-                photonView.RPC("showRole", RpcTarget.All, player.role.Name);
-                choisePanel.SetActive(true);
+                if(player.isKill){
+                    photonView.RPC("ShowRole", RpcTarget.All, player.role.Name, false);
+                    ButtonNextTurn_Click();
+                }
+                else{
+                    if(player.robbed)
+                        foreach(var p in turnBasedPlayerList){
+                            if(p.role.Name == "Thief")
+                                photonView.RPC("Robbed", RpcTarget.All, player.id, p.id);
+                        }
+                    photonView.RPC("ShowRole", RpcTarget.All, player.role.Name, true);
+                    choisePanel.SetActive(true);    
+                }
             }
     }
 
@@ -113,5 +133,27 @@ public class GameTurnManager : MonoBehaviour
     public void ZeroActivePlayer()
     {
         activePlayer = 0;
+    }
+
+    [PunRPC]
+    void PassiveBool(){
+        foreach(var player in StartGame.players){
+            player.isKill = false; 
+            player.robbed = false;
+            player.haveUlt = true;
+        }
+        foreach (GameObject roleBut in ButtonRole)
+            roleBut.gameObject.SetActive(true);
+                    
+                
+    }
+    [PunRPC]
+    void Robbed(int idRobPlayer, int idThiefPlayer){
+        var players = StartGame.players;
+        int moneyCount = players[idRobPlayer - 1].money;
+        players[idRobPlayer - 1].money = 0;
+        moneyCounters[players[idRobPlayer - 1].numberTable].text = "0";
+        players[idThiefPlayer - 1].money += moneyCount;
+        moneyCounters[players[idThiefPlayer - 1].numberTable].text = players[idThiefPlayer - 1].money.ToString();
     }
 }

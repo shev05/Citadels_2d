@@ -34,6 +34,7 @@ public class ChooseRole : MonoBehaviour
     }
 
     void RemoveRoles(){
+        removed = new List<RoleCard>();
         int randomIndexFirst = UnityEngine.Random.Range(0, roles.Count);
         removed.Add(roles[randomIndexFirst]);
         roles.RemoveAt(randomIndexFirst);
