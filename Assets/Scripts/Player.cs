@@ -17,8 +17,13 @@ public class Player : MonoBehaviour
     public bool isLocal;
     public bool isKing = false;
     public bool isActive = false;
+    public bool haveUlt = true;
+    public bool robbed = false;
+    public bool isKill = false;
+
     public int placeableCardCount = 1;
     public List<Card> cards = new List<Card>();
+
 
     public Player (int idPlayer, bool IsLocal, int number)
     {
