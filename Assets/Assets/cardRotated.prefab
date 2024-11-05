@@ -91,9 +91,10 @@ GameObject:
   - component: {fileID: 3107475411936816234}
   - component: {fileID: 2180302169683720993}
   - component: {fileID: 5983787697467915074}
+  - component: {fileID: -5453391131233751456}
   m_Layer: 5
   m_Name: cardRotated
-  m_TagString: Untagged
+  m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -265,3 +266,16 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 1
   m_UseLocal: 1
+--- !u!114 &-5453391131233751456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3502511348226916518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a53c50fd193779145b44238152ae81d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickedCard: {fileID: 0}

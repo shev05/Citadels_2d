@@ -17,8 +17,10 @@ public class Player : MonoBehaviour
     public bool isLocal;
     public bool isKing = false;
     public bool isActive = false;
+    public bool destructible = true;
     public int placeableCardCount = 1;
     public List<Card> cards = new List<Card>();
+    public List<GameObject> placedCards = new List<GameObject>();
 
     public Player (int idPlayer, bool IsLocal, int number)
     {

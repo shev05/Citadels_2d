@@ -33,7 +33,9 @@ public class ChooseRole : MonoBehaviour
         
     }
 
-    void RemoveRoles(){
+    void RemoveRoles()
+    {
+        removed = new List<RoleCard>();
         int randomIndexFirst = UnityEngine.Random.Range(0, roles.Count);
         removed.Add(roles[randomIndexFirst]);
         roles.RemoveAt(randomIndexFirst);
@@ -72,9 +74,8 @@ public class ChooseRole : MonoBehaviour
         }
     }
 
-    public void ActivateChoosing()
+    private void ActivateChoosing()
     {
-        photonView.RPC("DeactivateRemovedCardSlots", RpcTarget.All);
         RemoveRoles();
         setupPanel();
         panel.SetActive(true);
@@ -96,12 +97,4 @@ public class ChooseRole : MonoBehaviour
             }
         }
     }
-    
-    [PunRPC]
-    public void DeactivateRemovedCardSlots()
-    {
-        foreach(var slot in removedCardSlots) slot.SetActive(false);
-    }
-
-    
 }

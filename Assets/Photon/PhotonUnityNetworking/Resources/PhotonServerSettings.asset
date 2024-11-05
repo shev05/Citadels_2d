@@ -63,6 +63,8 @@ MonoBehaviour:
   - ActivateRemovedCardSlots
   - DeactivateRemovedCardSlots
   - ZeroActivePlayer
+  - UpdateMoney
+  - DestroyCard
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0

@@ -9,6 +9,7 @@ TagManager:
   - HandField
   - PlayingField
   - Rolecard
+  - PlayersMoney
   layers:
   - Default
   - TransparentFX
