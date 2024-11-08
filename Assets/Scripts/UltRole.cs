@@ -8,7 +8,8 @@ public class UltScript : MonoBehaviour
 {
     public GameObject KillPanel; // Ссылка на Panel всплывающего окна
     public GameObject ThiefPanel; // Ссылка на Panel всплывающего окна
-    public List<GameObject> ButtonRole; 
+    public List<GameObject> ButtonRole;
+    public GameObject destructionPanel;
 
     private KeyCode activationKey = KeyCode.Q;
 
@@ -44,6 +45,8 @@ public class UltScript : MonoBehaviour
                     }
                 } 
             }
+            if(players[indexPlayer].role.Name == "Warlord")
+                destructionPanel.SetActive(!destructionPanel.activeSelf); // Не готово, нужно предусмотреть, что карта точно выбрана
         }
     }
 }

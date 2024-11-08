@@ -9,7 +9,6 @@ using UnityEngine.UI;
 public class DestructibleCard : MonoBehaviour
 {
     private List<Player> _players;
-    private bool isClicked = false;
     private DestructionManager _destructionManager;
 
     private void Start()
@@ -23,17 +22,30 @@ public class DestructibleCard : MonoBehaviour
         var currentPlayer = _players[PhotonNetwork.LocalPlayer.ActorNumber - 1];
         if (currentPlayer.role.Name.Equals("Warlord") && currentPlayer.isActive)
         {
-            if (!isClicked)
-            {
-                isClicked = true;
-                _destructionManager.clickedCard = gameObject;
-                gameObject.transform.GetChild(0).GetComponent<Image>().color = new Color(1f, 0f, 0f, 0.8f);
-            }
-            else
+            _destructionManager.clickedCard = gameObject;
+            if (_destructionManager.FindPlayer() is null || _destructionManager.FindPlayer().role.Name.Equals("Bishop"))
             {
                 _destructionManager.clickedCard = null;
-                isClicked = false;
+                return;
+            }
+            if (_destructionManager.prevCard is null)
+            {
+                _destructionManager.prevCard = gameObject;
+                _destructionManager.destroyButton.SetActive(true);
+                gameObject.transform.GetChild(0).GetComponent<Image>().color = new Color(1f, 0f, 0f, 0.8f);
+            }
+            else if (_destructionManager.clickedCard.Equals(_destructionManager.prevCard))
+            {
+                _destructionManager.clickedCard = null;
+                _destructionManager.prevCard = null;
+                _destructionManager.destroyButton.SetActive(false);
                 gameObject.transform.GetChild(0).GetComponent<Image>().color = new Color(1f, 1f, 1f);
+            }
+            else if (!_destructionManager.clickedCard.Equals(_destructionManager.prevCard))
+            {
+                _destructionManager.prevCard.transform.GetChild(0).GetComponent<Image>().color = new Color(1f, 1f, 1f);
+                _destructionManager.prevCard = gameObject;
+                gameObject.transform.GetChild(0).GetComponent<Image>().color = new Color(1f, 0f, 0f, 0.8f);
             }
         }
     }
