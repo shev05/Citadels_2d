@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,13 @@ public class DestructionManager : MonoBehaviour
     public List<TMP_Text> _playerMoney;
     public GameObject clickedCard;
     public List<GameObject> hands;
+    public GameObject prevCard;
+    public GameObject destroyButton;
     
     // Start is called before the first frame update
     void Start()
     {
+        prevCard = null;
         _photonView = GetComponent<PhotonView>();
     }
 
@@ -33,6 +37,9 @@ public class DestructionManager : MonoBehaviour
             _photonView.RPC("UpdateMoney", RpcTarget.All, 
                 currentPlayer.id, chosenCard.cost - 1);
             _photonView.RPC("DestroyCard", RpcTarget.All, handIndex, cardIndex, playerIndex);
+            prevCard = null;
+            clickedCard = null;
+            destroyButton.SetActive(false);
         }
         else
         {
@@ -74,5 +81,13 @@ public class DestructionManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    public Player FindPlayer()
+    {
+        _players = StartGame.players;
+        var handIndex = hands.IndexOf(FindParent(clickedCard));
+        if (handIndex == -1) return null;
+        return _players.Find(player => player.numberTable == handIndex);
     }
 }
