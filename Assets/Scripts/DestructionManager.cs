@@ -33,7 +33,6 @@ public class DestructionManager : MonoBehaviour
             var handIndex = hands.IndexOf(FindParent(clickedCard));
             var cardIndex = clickedCard.transform.GetSiblingIndex();
             var playerIndex = _players.Find(player => player.numberTable == handIndex).id - 1;
-            Debug.Log(handIndex + " qq " + cardIndex + " qq " + playerIndex);
             _photonView.RPC("UpdateMoney", RpcTarget.All, 
                 currentPlayer.id, chosenCard.cost - 1);
             _photonView.RPC("DestroyCard", RpcTarget.All, handIndex, cardIndex, playerIndex);

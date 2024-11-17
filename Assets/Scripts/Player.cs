@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     public bool isKing = false;
     public bool isActive = false;
     public bool haveUlt = true;
+    public bool addMoney = true;
     public bool robbed = false;
     public bool isKill = false;
 

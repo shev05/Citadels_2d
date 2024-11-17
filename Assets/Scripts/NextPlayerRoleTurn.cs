@@ -88,7 +88,6 @@ public class NextPlayerRoleTurn : MonoBehaviour
             // Сбрасываем выбор и скрываем кнопку
             selectedCard = null;
             selectCardButton.gameObject.SetActive(false);
-            Debug.Log(cardsOnField.Count);
         }
         else
         {
@@ -106,7 +105,6 @@ public class NextPlayerRoleTurn : MonoBehaviour
         foreach (var card in remainingCards)
         {
             remainingCardNames.Add(card.GetComponent<CardInfoScr>().SelfCard.Name);
-            Debug.Log(card.GetComponent<CardInfoScr>().SelfCard.Name);
         }
         // Скрываем кнопку после выделения карты
         selectCardButton.gameObject.SetActive(false);

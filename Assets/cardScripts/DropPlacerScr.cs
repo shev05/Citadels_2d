@@ -13,13 +13,16 @@ public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler,
     public GameObject rotatedCard;
     public GameObject tempCard;
     public List<GameObject> hands;
+    public GameObject cardDropField;
+    public GameObject handField;
     List<Player> players;
-    public TMP_Text[] money_player;
-    public TMP_Text[] card_player; 
     PhotonView photonView;
+    private UpdatePlayerState playerState;
+
 
     void Start(){
         photonView = GetComponent<PhotonView>();
+        playerState = FindObjectOfType<UpdatePlayerState>();
     }
 
     public void OnDrop(PointerEventData eventData)
@@ -31,13 +34,21 @@ public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler,
         int cardIndex = players[indexPlayer].cards.FindIndex(obj => obj == chosenCard);
         DropPlacerCScr previousContainer = card.DefaultParent.GetComponent<DropPlacerCScr>();
         DropPlacerCScr targetContainer = GetComponent<DropPlacerCScr>();
-        if(!players[indexPlayer].isActive ||
-         players[indexPlayer].placeableCardCount == 0 ||
-         players[indexPlayer].money < chosenCard.cost)
+        DropPlacerCScr cardDropContainer = cardDropField.GetComponent<DropPlacerCScr>();
+        if (!players[indexPlayer].isActive)
+        {
             return;
-        
+        }
+
+        if (targetContainer != cardDropContainer &&
+            (players[indexPlayer].placeableCardCount == 0 ||
+            players[indexPlayer].money < chosenCard.cost))
+        {
+            return;
+        }
         if (card)
         {
+            
             if (previousContainer != null && previousContainer != this)
             {
                 previousContainer.RemoveCardFromGroup(card);
@@ -45,13 +56,19 @@ public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler,
             
             if (placedCards.Count < maxCards)
             {
-                // Добавляем карточку, если не превышен лимит
-                AddCardToGroup(card);
+                Debug.Log(targetContainer.gameObject.name);
+                if(targetContainer.gameObject.name.Equals("DropField")){
+                    AddCardToGroup(card);
+                }
+                else{
+                    AddCardToGroup(card);
                 
-                players[indexPlayer].placeableCardCount -= 1;
-                photonView.RPC("DisplayCardOnOtherTables", RpcTarget.Others, indexPlayer,
-                    cardIndex);
-                photonView.RPC("CardDroped", RpcTarget.All, indexPlayer, chosenCard.cost, cardIndex);
+                    photonView.RPC("DisplayCardOnOtherTables", RpcTarget.Others, indexPlayer,
+                        cardIndex);
+                    photonView.RPC("CardDroped", RpcTarget.All, indexPlayer, chosenCard.cost, cardIndex);
+                    playerState.UpdateCard();
+                    playerState.UpdateMoney();
+                }
             }
         }
     }
@@ -106,10 +123,9 @@ public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler,
     [PunRPC]
     void CardDroped(int indexPlayer, int cost, int cardIndex){
         players = StartGame.players;
+        players[indexPlayer].placeableCardCount -= 1;
         players[indexPlayer].cards.RemoveAt(cardIndex);
         players[indexPlayer].money -= cost;
-        money_player[players[indexPlayer].numberTable].text = players[indexPlayer].money.ToString();
-        card_player[players[indexPlayer].numberTable].text = players[indexPlayer].cards.Count.ToString();
     }
     
     [PunRPC]
