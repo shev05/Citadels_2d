@@ -23,7 +23,8 @@ public class DestructibleCard : MonoBehaviour
         if (currentPlayer.role.Name.Equals("Warlord") && currentPlayer.isActive)
         {
             _destructionManager.clickedCard = gameObject;
-            if (_destructionManager.FindPlayer() is null || _destructionManager.FindPlayer().role.Name.Equals("Bishop"))
+            if (_destructionManager.FindPlayer() is null || _destructionManager.FindPlayer().role.Name.Equals("Bishop")
+                                                         || gameObject.GetComponent<CardInfoScr>().SelfCard.Name.Equals("Keep"))
             {
                 _destructionManager.clickedCard = null;
                 return;

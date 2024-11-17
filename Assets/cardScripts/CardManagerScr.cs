@@ -22,7 +22,7 @@ public class CardManagerScr : MonoBehaviour
 {
     void Awake(){
         //green
-        CardsManager.AllCards.Add(new Card("docks", "picture/location/Green/docks", "Green", 3));
+        /*CardsManager.AllCards.Add(new Card("docks", "picture/location/Green/docks", "Green", 3));
         CardsManager.AllCards.Add(new Card("docks", "picture/location/Green/docks", "Green", 3));
         CardsManager.AllCards.Add(new Card("docks", "picture/location/Green/docks", "Green", 3));
 
@@ -94,7 +94,7 @@ public class CardManagerScr : MonoBehaviour
         CardsManager.AllCards.Add(new Card("Monastery", "picture/location/Blue/monastery", "Blue", 3));
 
         CardsManager.AllCards.Add(new Card("Cathedral", "picture/location/Blue/cathedral", "Blue", 5));
-        CardsManager.AllCards.Add(new Card("Cathedral", "picture/location/Blue/cathedral", "Blue", 5));
+        CardsManager.AllCards.Add(new Card("Cathedral", "picture/location/Blue/cathedral", "Blue", 5));*/
 
         //purple
         CardsManager.AllCards.Add(new Card("Hauntedcity", "picture/location/Purple/hauntedcity", "Purple", 2, "AnyColorEndGame"));

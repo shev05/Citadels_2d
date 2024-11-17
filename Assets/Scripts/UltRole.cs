@@ -95,7 +95,7 @@ public class UltScript : MonoBehaviour
         int addMoney = 0;
         foreach (Transform cardTransform in panel.transform){
             Card card = (Card)cardTransform.GetComponent<CardInfoScr>().SelfCard;
-            if(card.Color == color)
+            if(card.Color == color || card.Name.Equals("Schoolofmagic"))
                 addMoney++;
         }
         if(addMoney != 0){
