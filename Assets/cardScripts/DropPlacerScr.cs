@@ -4,6 +4,7 @@ using Photon.Pun;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
@@ -124,6 +125,7 @@ public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler,
     void CardDroped(int indexPlayer, int cost, int cardIndex){
         players = StartGame.players;
         players[indexPlayer].placeableCardCount -= 1;
+        players[indexPlayer].placedCards.Add(players[indexPlayer].cards[cardIndex]);
         players[indexPlayer].cards.RemoveAt(cardIndex);
         players[indexPlayer].money -= cost;
     }
@@ -149,6 +151,28 @@ public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler,
         otherTableCard.transform.localScale = new Vector3(1, 1, 1);
         if (players[indexPlayer].numberTable == 2) otherTableCard.transform.rotation = Quaternion.Euler(0, 0, 90);
         if (players[indexPlayer].numberTable == 3) otherTableCard.transform.rotation = Quaternion.Euler(0, 0, 180);
+        
+    }
+
+    void AddActiveSkill(GameObject card)
+    {
+        Button button = card.GetComponent<Button>();
+        if (button == null)
+        {
+            button = card.AddComponent<Button>();
+        }
+
+        // Очищаем предыдущие действия
+        button.onClick.RemoveAllListeners();
+
+        switch (card.GetComponent<CardInfoScr>().SelfCard.Name)
+        {
+            case "Laboratory":
+            {
+                button.onClick.AddListener((() => {}));
+                return;
+            }
+        }
         
     }
 }

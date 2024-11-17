@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     //List <Player> players = new List<Player>();
     public int money;
     public RoleCard role;
-   // List <Card> cards = new List<Card>();
+    // List <Card> cards = new List<Card>();
     public int id;
     public int table = 1;
     public int numberTable;
@@ -21,9 +21,13 @@ public class Player : MonoBehaviour
     public bool addMoney = true;
     public bool robbed = false;
     public bool isKill = false;
+    public bool isEndFirst = false;
+    public int score = 0;
+    
 
     public int placeableCardCount = 1;
     public List<Card> cards = new List<Card>();
+    public List<Card> placedCards = new List<Card>();
 
 
     public Player (int idPlayer, bool IsLocal, int number)

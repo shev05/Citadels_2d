@@ -1,3 +1,4 @@
+using System.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ public class GameTurnManager : MonoBehaviour
     private int tableNumber;
     public List<GameObject> ButtonRole; 
     private UpdatePlayerState playerState;
+    public TMP_Text textWin;
 
     public static int activePlayer = 0;
 
@@ -61,8 +63,7 @@ public class GameTurnManager : MonoBehaviour
     }
 
     public void ButtonNextTurn_Click(){
-        Debug.Log(activePlayer + "ББ");
-
+        photonView.RPC("SevenCards", RpcTarget.All);
         if (activePlayer >= turnBasedPlayerList.Count)
         {
             var players = StartGame.players;
@@ -77,13 +78,15 @@ public class GameTurnManager : MonoBehaviour
                         }
             playerState.UpdateKing();
             photonView.RPC("PassiveBool", RpcTarget.All);
-            _chooseRole.startChoosing();
+            if(CheckedEnd())
+                _chooseRole.startChoosing();
             nextTurnButton.gameObject.SetActive(false);
             return;
         }
         photonView.RPC("TurnStep", RpcTarget.All);
         nextTurnButton.gameObject.SetActive(false);
         turnBasedPlayerList[activePlayer - 1].isActive = false;
+        
     }
 
     [PunRPC]
@@ -124,7 +127,7 @@ public class GameTurnManager : MonoBehaviour
         player.isActive = true;
     }
 
-    private void ChooseCard(){
+private void ChooseCard(){
         choisePanel.SetActive(false);
         cardChoisePanel.SetActive(true);
         for (int i = 0; i <= 1; i++){   
@@ -181,5 +184,72 @@ public class GameTurnManager : MonoBehaviour
         var player = turnBasedPlayerList[activePlayer];
         if(player.role.Name == "Architect")
             player.placeableCardCount = 3;
+    }
+    [PunRPC]
+    void SevenCards(){
+        int index;
+        if(activePlayer == 0)
+            index = activePlayer;
+        else 
+            index = activePlayer - 1;
+        if(turnBasedPlayerList[index].placedCards.Count >= 7){
+            bool first = true;
+            foreach(var p in StartGame.players){
+                if(p.isEndFirst){
+                    turnBasedPlayerList[index].score += 2;
+                    first = false;
+                }
+            }
+            if(first){
+                turnBasedPlayerList[index].score += 4;
+                turnBasedPlayerList[index].isEndFirst = true;
+            }
+        }
+    }
+    bool CheckedEnd(){
+        var players = StartGame.players;
+        foreach(var player in players){
+            if(player.isEndFirst){
+                photonView.RPC("Scoring", RpcTarget.All);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    [PunRPC]
+    void Scoring(){
+        var players = StartGame.players;
+        List<int> idScore = new List<int>();
+        foreach(var player in players){
+            foreach(var card in player.placedCards)
+                player.score += card.cost;
+            if(CheckedAllTypes(player))
+                player.score +=3;
+            idScore.Add(player.score);
+        }
+        int index = idScore.IndexOf(idScore.Max());
+        textWin.gameObject.SetActive(true);
+        textWin.text = $"Победил игрок с айди №{players[index].id} с количеством очков {players[index].score}."+
+                      $"\n Ваше количество очков {players[PhotonNetwork.LocalPlayer.ActorNumber - 1].score}";
+    }
+    bool CheckedAllTypes(Player player){
+        List<int> color = new List<int>{0,0,0,0,0};
+        foreach(var card in player.placedCards){
+            if (card.Color == "Yellow")
+                color[0]+=1;
+            else if (card.Color == "Green")
+                color[1]+=1;
+            else if (card.Color == "Blue")
+                color[2]+=1;
+            else if (card.Color == "Red")
+                color[3]+=1;
+            else
+                color[4]+=1;
+        }
+        if(color.Contains(0))
+            return false;  
+        else 
+            return true;  
     }
 }
