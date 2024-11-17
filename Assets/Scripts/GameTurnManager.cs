@@ -11,7 +11,6 @@ public class GameTurnManager : MonoBehaviour
 {
     private List<Player> _players;
     private List<Player> turnBasedPlayerList;
-    public List<TMP_Text> moneyCounters;
     public List<TMP_Text> roleTexts;
     private PhotonView photonView;
     public Button nextTurnButton;
@@ -22,8 +21,7 @@ public class GameTurnManager : MonoBehaviour
     public GameObject KillPanel;
     private int tableNumber;
     public List<GameObject> ButtonRole; 
-
-
+    private UpdatePlayerState playerState;
 
     public static int activePlayer = 0;
 
@@ -33,6 +31,8 @@ public class GameTurnManager : MonoBehaviour
     {
         photonView = GetComponent<PhotonView>();
         _chooseRole = FindObjectOfType<ChooseRole>();
+        playerState = FindObjectOfType<UpdatePlayerState>();
+
     }
 
     // Update is called once per frame
@@ -65,6 +65,17 @@ public class GameTurnManager : MonoBehaviour
 
         if (activePlayer >= turnBasedPlayerList.Count)
         {
+            var players = StartGame.players;
+            foreach (var player in players)
+                if(player.role.Name == "King" )
+                    foreach (var playerKing in players)
+                        if(playerKing.isKing){
+                            if(player.id == playerKing.id)
+                                break;
+                            else
+                                photonView.RPC("SwapKing", RpcTarget.All, player.id, playerKing.id);
+                        }
+            playerState.UpdateKing();
             photonView.RPC("PassiveBool", RpcTarget.All);
             _chooseRole.startChoosing();
             nextTurnButton.gameObject.SetActive(false);
@@ -73,7 +84,13 @@ public class GameTurnManager : MonoBehaviour
         photonView.RPC("TurnStep", RpcTarget.All);
         nextTurnButton.gameObject.SetActive(false);
         turnBasedPlayerList[activePlayer - 1].isActive = false;
-        turnBasedPlayerList[activePlayer - 1].placeableCardCount = 1;
+    }
+
+    [PunRPC]
+    private void SwapKing(int idNewKing, int idOldKing){
+        var players = StartGame.players;
+        players[idNewKing - 1].isKing = true;
+        players[idOldKing - 1].isKing = false;
     }
 
     [PunRPC]
@@ -88,9 +105,12 @@ public class GameTurnManager : MonoBehaviour
                 else{
                     if(player.robbed)
                         foreach(var p in turnBasedPlayerList){
-                            if(p.role.Name == "Thief")
+                            if(p.role.Name == "Thief"){
                                 photonView.RPC("Robbed", RpcTarget.All, player.id, p.id);
-                        }
+                                playerState.UpdateMoney();
+                                }
+                    }
+                    CheckedArchitect();
                     photonView.RPC("ShowRole", RpcTarget.All, player.role.Name, true);
                     choisePanel.SetActive(true);    
                 }
@@ -101,7 +121,6 @@ public class GameTurnManager : MonoBehaviour
     private void ChooseMoney(){
         var player = turnBasedPlayerList[activePlayer++];
         player.money += 2;
-        moneyCounters[tableNumber].text = player.money.ToString();
         player.isActive = true;
     }
 
@@ -120,6 +139,7 @@ public class GameTurnManager : MonoBehaviour
 
     public void MoneyButton_Click(){
         photonView.RPC("ChooseMoney", RpcTarget.All);
+        playerState.UpdateMoney();
         choisePanel.SetActive(false);
         nextTurnButton.gameObject.SetActive(true);
 
@@ -141,6 +161,8 @@ public class GameTurnManager : MonoBehaviour
             player.isKill = false; 
             player.robbed = false;
             player.haveUlt = true;
+            player.addMoney = true;
+            player.placeableCardCount = 1;
         }
         foreach (GameObject roleBut in ButtonRole)
             roleBut.gameObject.SetActive(true);
@@ -152,8 +174,12 @@ public class GameTurnManager : MonoBehaviour
         var players = StartGame.players;
         int moneyCount = players[idRobPlayer - 1].money;
         players[idRobPlayer - 1].money = 0;
-        moneyCounters[players[idRobPlayer - 1].numberTable].text = "0";
         players[idThiefPlayer - 1].money += moneyCount;
-        moneyCounters[players[idThiefPlayer - 1].numberTable].text = players[idThiefPlayer - 1].money.ToString();
+    }
+
+    void CheckedArchitect(){
+        var player = turnBasedPlayerList[activePlayer];
+        if(player.role.Name == "Architect")
+            player.placeableCardCount = 3;
     }
 }

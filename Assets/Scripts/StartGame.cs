@@ -11,13 +11,14 @@ public class StartGame : MonoBehaviour
     static public List<Player> players;
     private PhotonView photonView;
     [SerializeField] Button button;
-    [SerializeField] TMP_Text[] money; 
-    [SerializeField] TMP_Text[] cardCount; 
     [SerializeField] GameObject[] kings;
+    private UpdatePlayerState playerState;
 
     private void Start()
     {
         photonView = GetComponent<PhotonView>();
+        playerState = FindObjectOfType<UpdatePlayerState>();
+
     }
     public void SendButton()
     {
@@ -25,6 +26,8 @@ public class StartGame : MonoBehaviour
         {
             int randomIndex = UnityEngine.Random.Range(0, PhotonNetwork.PlayerList.Length);
             photonView.RPC("start", RpcTarget.AllBuffered, randomIndex);
+            playerState.UpdateMoney();
+            playerState.UpdateCard();
         }
     }
 
@@ -80,10 +83,6 @@ public class StartGame : MonoBehaviour
                         }
             }
         }
-        foreach (var m in money)
-            m.text = "2";
-        foreach (var c in cardCount)
-            c.text = "4";
         players[randomIndex].isKing = true;
         kings[players[randomIndex].numberTable].SetActive(true);
     }

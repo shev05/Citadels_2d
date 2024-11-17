@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using Unity.VisualScripting;
+using TMPro;
 
 public class CardDealer : MonoBehaviourPun
 {
@@ -15,15 +17,15 @@ public class CardDealer : MonoBehaviourPun
     public GameObject cardPref;            // Префаб карты для создания объектов
     List<Player> players;
     GameObject cardObject;
-
     public static List<Card> deck;                 // Колода карт
     public Canvas canvas;
     private PhotonView photonView;
+    private UpdatePlayerState playerState;
 
     private void Start()
     {
         photonView = GetComponent<PhotonView>();
-
+        playerState = FindObjectOfType<UpdatePlayerState>();
         // Создаем колоду карт
         deck = new List<Card>(CardsManager.AllCards);
     }
@@ -32,6 +34,13 @@ public class CardDealer : MonoBehaviourPun
             photonView.RPC("StartDealing", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
     }
     
+    public void StartDealingWithCount(int count){
+        for(int i = 0; i < count; i++)
+            IssuingCards(PhotonNetwork.LocalPlayer.ActorNumber);
+        playerState.UpdateCard();
+    }
+
+
     [PunRPC]
     public void StartDealing(int requestingPlayerID)
     {
@@ -49,14 +58,8 @@ public class CardDealer : MonoBehaviourPun
                 {
                     if (PhotonNetwork.LocalPlayer.ActorNumber == player.id)
                     {
-                        // Выбираем случайную карту из колоды
-                        int randomIndex = Random.Range(0, deck.Count);
-
-                        photonView.RPC("DealingCard", RpcTarget.All, randomIndex, player.id);
-                        // Проверяем, какой игрок запросил карты
-                    
-                        // Если это локальный игрок, карты идут в его локальную руку
-                        StartCoroutine(MoveCardToHand(cardObject, playerHandPositions));
+                        IssuingCards(player.id);
+                        playerState.UpdateCard();
                     }
 
                     // Задержка перед следующей картой
@@ -67,6 +70,17 @@ public class CardDealer : MonoBehaviourPun
         {
             Debug.LogWarning("Не хватает карт в колоде для раздачи.");
         }
+    }
+
+    private void IssuingCards(int id){
+        // Выбираем случайную карту из колоды
+        int randomIndex = Random.Range(0, deck.Count);
+
+        photonView.RPC("DealingCard", RpcTarget.All, randomIndex, id);
+        // Проверяем, какой игрок запросил карты
+                    
+        // Если это локальный игрок, карты идут в его локальную руку
+        StartCoroutine(MoveCardToHand(cardObject, playerHandPositions));
     }
 
     private IEnumerator MoveCardToHand(GameObject card, Transform targetParent)
@@ -98,5 +112,8 @@ public class CardDealer : MonoBehaviourPun
         if(id != PhotonNetwork.LocalPlayer.ActorNumber)
             Destroy(cardObject);
     }
+    
+
+    
 }
 

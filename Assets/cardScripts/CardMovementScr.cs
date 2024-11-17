@@ -63,6 +63,7 @@ public class CardMovementScr : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         transform.SetSiblingIndex(TempCardGO.transform.GetSiblingIndex());
         TempCardGO.transform.SetParent(GameObject.Find("Canvas").transform);
         TempCardGO.transform.localPosition = new Vector3(2240,0);
+        if(DefaultParent.name.Equals("Hand 1 player")) this.enabled = false;
     }
 
     void CheckPos()

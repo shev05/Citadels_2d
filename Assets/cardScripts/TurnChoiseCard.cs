@@ -17,13 +17,16 @@ public class TurnChoiseCard : MonoBehaviour
     public GameObject panel;
     public GameObject button;
     private PhotonView photonView;
-    [SerializeField] TMP_Text[] cardCount; 
+    private UpdatePlayerState playerState;
+
 
 
     // Start is called before the first frame update
     void Start()
     {
         photonView = GetComponent<PhotonView>();
+        playerState = FindObjectOfType<UpdatePlayerState>();
+
     }
 
     public void SetSelectedCard(GameObject card)
@@ -47,6 +50,7 @@ public class TurnChoiseCard : MonoBehaviour
         var chosenCard = selectedCard.GetComponent<CardInfoScr>().SelfCard;
         var index = CardDealer.deck.FindIndex(item => item.Name == chosenCard.Name);
         photonView.RPC("RemoveCard", RpcTarget.All, index, PhotonNetwork.LocalPlayer.ActorNumber);
+        playerState.UpdateCard();
         buttonNextPlayer.gameObject.SetActive(true);
         button.SetActive(false);
         panel.SetActive(false);
@@ -58,7 +62,6 @@ public class TurnChoiseCard : MonoBehaviour
         var newCard = Instantiate(cardPrefab, hand.transform, false);
         newCard.GetComponent<CardInfoScr>().ShowCardInfo(CardDealer.deck[index]);
         player.cards.Add(CardDealer.deck[index]);
-        cardCount[player.numberTable].text = player.cards.Count.ToString();
         CardDealer.deck.RemoveAt(index);
         GameTurnManager.activePlayer++;
         if(id != PhotonNetwork.LocalPlayer.ActorNumber)

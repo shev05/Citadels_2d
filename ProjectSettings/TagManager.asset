@@ -9,6 +9,7 @@ TagManager:
   - HandField
   - PlayingField
   - Rolecard
+  - Avatar
   layers:
   - Default
   - TransparentFX
