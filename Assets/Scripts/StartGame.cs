@@ -9,6 +9,7 @@ using TMPro;
 public class StartGame : MonoBehaviour
 {
     static public List<Player> players;
+    static public int round;
     private PhotonView photonView;
     [SerializeField] Button button;
     [SerializeField] GameObject[] kings;

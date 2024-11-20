@@ -63,7 +63,7 @@ public class CardManagerScr : MonoBehaviour
 
         CardsManager.AllCards.Add(new Card("Fortress", "picture/location/Red/fortress", "Red", 5));
         CardsManager.AllCards.Add(new Card("Fortress", "picture/location/Red/fortress", "Red", 5));
-
+*/
         //Yellow
         CardsManager.AllCards.Add(new Card("Manor", "picture/location/Yellow/manor", "Yellow", 3));
         CardsManager.AllCards.Add(new Card("Manor", "picture/location/Yellow/manor", "Yellow", 3));
@@ -94,7 +94,7 @@ public class CardManagerScr : MonoBehaviour
         CardsManager.AllCards.Add(new Card("Monastery", "picture/location/Blue/monastery", "Blue", 3));
 
         CardsManager.AllCards.Add(new Card("Cathedral", "picture/location/Blue/cathedral", "Blue", 5));
-        CardsManager.AllCards.Add(new Card("Cathedral", "picture/location/Blue/cathedral", "Blue", 5));*/
+        CardsManager.AllCards.Add(new Card("Cathedral", "picture/location/Blue/cathedral", "Blue", 5));
 
         //purple
         CardsManager.AllCards.Add(new Card("Hauntedcity", "picture/location/Purple/hauntedcity", "Purple", 2, "AnyColorEndGame"));

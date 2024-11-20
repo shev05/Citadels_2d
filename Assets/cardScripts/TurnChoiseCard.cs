@@ -49,6 +49,9 @@ public class TurnChoiseCard : MonoBehaviour
     public void ChoiseButton_Click(){
         var chosenCard = selectedCard.GetComponent<CardInfoScr>().SelfCard;
         var index = CardDealer.deck.FindIndex(item => item.Name == chosenCard.Name);
+        foreach (Transform item in panel.transform.GetChild(0)){
+            Destroy(item.gameObject);
+        }
         photonView.RPC("RemoveCard", RpcTarget.All, index, PhotonNetwork.LocalPlayer.ActorNumber);
         playerState.UpdateCard();
         buttonNextPlayer.gameObject.SetActive(true);

@@ -23,6 +23,12 @@ public class Player : MonoBehaviour
     public bool isKill = false;
     public bool isEndFirst = false;
     public int score = 0;
+    public int roundForTown = 100;
+    public int giveCardInStartTurn = 2; 
+    public bool haveLibrary = false;
+    public bool haveSmithyUlt = true;
+    public bool haveLaboratoryUlt = true;
+    public bool hasGraveyard = false;
     
 
     public int placeableCardCount = 1;
@@ -32,7 +38,7 @@ public class Player : MonoBehaviour
 
     public Player (int idPlayer, bool IsLocal, int number)
     {
-        money = 2;
+        money = 25;
         id = idPlayer;
         isLocal =  IsLocal;
         numberTable = number; 
