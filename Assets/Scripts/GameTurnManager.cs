@@ -23,6 +23,7 @@ public class GameTurnManager : MonoBehaviour
     private int tableNumber;
     public List<GameObject> ButtonRole; 
     private UpdatePlayerState playerState;
+    private CardDealer cardDealer;
     public TMP_Text textWin;
 
     public static int activePlayer = 0;
@@ -34,7 +35,7 @@ public class GameTurnManager : MonoBehaviour
         photonView = GetComponent<PhotonView>();
         _chooseRole = FindObjectOfType<ChooseRole>();
         playerState = FindObjectOfType<UpdatePlayerState>();
-
+        cardDealer = FindObjectOfType<CardDealer>();
     }
 
     // Update is called once per frame
@@ -127,14 +128,19 @@ public class GameTurnManager : MonoBehaviour
         player.isActive = true;
     }
 
-private void ChooseCard(){
+    private void ChooseCard(){
         choisePanel.SetActive(false);
+        var player = StartGame.players[PhotonNetwork.LocalPlayer.ActorNumber - 1];
+        if(player.haveLibrary)
+            cardDealer.StartDealingWithCount(2);
+        else{
         cardChoisePanel.SetActive(true);
-        for (int i = 0; i <= 1; i++){   
+        for (int i = 0; i < player.giveCardInStartTurn; i++){   
             int randomIndex = UnityEngine.Random.Range(0, CardDealer.deck.Count);
             Card selectedCard = CardDealer.deck[randomIndex];
             var cardObject = Instantiate(choiseCardPrefab, cardChoisePanel.transform.GetChild(0).transform, false);
             cardObject.GetComponent<CardInfoScr>().ShowCardInfo(selectedCard);
+        }
         }
 
         
@@ -156,6 +162,7 @@ private void ChooseCard(){
     public void ZeroActivePlayer()
     {
         activePlayer = 0;
+        StartGame.round += 1;
     }
 
     [PunRPC]
@@ -166,7 +173,11 @@ private void ChooseCard(){
             player.haveUlt = true;
             player.addMoney = true;
             player.placeableCardCount = 1;
+            player.haveSmithyUlt = true;
+            player.haveLaboratoryUlt = true;
         }
+        foreach(var item in roleTexts)
+            item.text = "";
         foreach (GameObject roleBut in ButtonRole)
             roleBut.gameObject.SetActive(true);
                     
@@ -192,7 +203,7 @@ private void ChooseCard(){
             index = activePlayer;
         else 
             index = activePlayer - 1;
-        if(turnBasedPlayerList[index].placedCards.Count >= 7){
+        if(turnBasedPlayerList[index].placedCards.Count >= 2){
             bool first = true;
             foreach(var p in StartGame.players){
                 if(p.isEndFirst){
@@ -222,8 +233,11 @@ private void ChooseCard(){
         var players = StartGame.players;
         List<int> idScore = new List<int>();
         foreach(var player in players){
-            foreach(var card in player.placedCards)
+            foreach(var card in player.placedCards){
                 player.score += card.cost;
+                if(card.Name == "Dragongate" || card.Name == "University")
+                    player.score +=2;
+            }
             if(CheckedAllTypes(player))
                 player.score +=3;
             idScore.Add(player.score);
@@ -235,8 +249,11 @@ private void ChooseCard(){
     }
     bool CheckedAllTypes(Player player){
         List<int> color = new List<int>{0,0,0,0,0};
+        bool townCheck = false;
         foreach(var card in player.placedCards){
-            if (card.Color == "Yellow")
+            if (card.Name == "Hauntedcity")
+                townCheck = true;
+            else if (card.Color == "Yellow")
                 color[0]+=1;
             else if (card.Color == "Green")
                 color[1]+=1;
@@ -247,6 +264,8 @@ private void ChooseCard(){
             else
                 color[4]+=1;
         }
+        if(color.Contains(0) && townCheck)
+            color[color.IndexOf(0)] += 1; 
         if(color.Contains(0))
             return false;  
         else 
