@@ -12,7 +12,6 @@ public class DestructionManager : MonoBehaviour
 {
     private List<Player> _players;
     private PhotonView _photonView;
-    public GameObject clickedCard;
     public List<GameObject> hands;
     public GameObject prevCard;
     public GameObject destroyButton;
@@ -22,6 +21,7 @@ public class DestructionManager : MonoBehaviour
     public GameObject storage;
     private int graveyardPlayerId = -1;
     public GameObject cardPrefab;
+    private SoundManager soundManager;
     
     // Start is called before the first frame update
     void Start()
@@ -29,9 +29,10 @@ public class DestructionManager : MonoBehaviour
         prevCard = null;
         _photonView = GetComponent<PhotonView>();
         playerState = FindObjectOfType<UpdatePlayerState>();
+        soundManager = FindObjectOfType<SoundManager>();
     }
 
-    public void Destruction()
+    public void Destruction(GameObject clickedCard)
     {
         _players = StartGame.players;
         var currentPlayer = _players[PhotonNetwork.LocalPlayer.ActorNumber - 1];
@@ -72,6 +73,7 @@ public class DestructionManager : MonoBehaviour
             if(card.Color.Equals("Purple")) RemoveCardEffect(playerIndex, card.Name);
             _players[playerIndex].placedCards.Remove(card);
             Destroy(cardToDestroy);
+            soundManager.WarlordDestroy();
         }
         else
         {
@@ -89,7 +91,7 @@ public class DestructionManager : MonoBehaviour
         return null;
     }
 
-    public Player FindPlayer()
+    public Player FindPlayer(GameObject clickedCard)
     {
         _players = StartGame.players;
         var handIndex = hands.IndexOf(FindParent(clickedCard));

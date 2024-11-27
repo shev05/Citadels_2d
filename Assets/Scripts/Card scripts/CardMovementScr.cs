@@ -14,12 +14,14 @@ public class CardMovementScr : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public Transform DefaultParent, DefaultTempCardParent;
     GameObject TempCardGO;
     private List<Player> _players;
+    SoundManager soundManager;
 
 
     private void Awake()
     {
         MainCamera = Camera.allCameras[0];
         TempCardGO = GameObject.Find("TempCardGO");
+        soundManager = FindObjectOfType<SoundManager>();
     }
 
 
@@ -42,6 +44,7 @@ public class CardMovementScr : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
         transform.SetParent(DefaultParent.parent);
         GetComponent<CanvasGroup>().blocksRaycasts = false;
+        soundManager.CardDealerSound();
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -64,6 +67,7 @@ public class CardMovementScr : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         TempCardGO.transform.SetParent(GameObject.Find("Canvas").transform);
         TempCardGO.transform.localPosition = new Vector3(2240,0);
         if(DefaultParent.name.Equals("Hand 1 player")) this.enabled = false;
+        soundManager.CardPutSound();
     }
 
     void CheckPos()

@@ -18,6 +18,7 @@ public class TurnChoiseCard : MonoBehaviour
     public GameObject button;
     private PhotonView photonView;
     private UpdatePlayerState playerState;
+    SoundManager soundManager;
 
 
 
@@ -26,7 +27,7 @@ public class TurnChoiseCard : MonoBehaviour
     {
         photonView = GetComponent<PhotonView>();
         playerState = FindObjectOfType<UpdatePlayerState>();
-
+        soundManager = FindObjectOfType<SoundManager>();
     }
 
     public void SetSelectedCard(GameObject card)
@@ -42,11 +43,14 @@ public class TurnChoiseCard : MonoBehaviour
         // Приподнимаем карту
         selectedCard.transform.position += new Vector3(0, liftAmount, 0);
 
+        soundManager.CardDealerSound();
+
         // Показываем кнопку
         selectCardButton.gameObject.SetActive(true);
     }
 
-    public void ChoiseButton_Click(){
+    public void ChoiseButton_Click(GameObject card){
+        selectedCard = card;
         var chosenCard = selectedCard.GetComponent<CardInfoScr>().SelfCard;
         var index = CardDealer.deck.FindIndex(item => item.Name == chosenCard.Name);
         foreach (Transform item in panel.transform.GetChild(0)){
@@ -73,4 +77,6 @@ public class TurnChoiseCard : MonoBehaviour
             player.isActive = true;
 
     }
+
+
 }

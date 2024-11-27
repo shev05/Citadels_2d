@@ -17,6 +17,7 @@ public class MagicianHandSwap : MonoBehaviour
     private UpdatePlayerState playerState;
     public GameObject dropPanel;
     private CardDealer cardDealer;
+    private SoundManager soundManager;
 
     
     // Start is called before the first frame update
@@ -25,7 +26,7 @@ public class MagicianHandSwap : MonoBehaviour
         _photonView = GetComponent<PhotonView>();
         playerState = FindObjectOfType<UpdatePlayerState>();
         cardDealer = FindObjectOfType<CardDealer>();
-
+        soundManager = FindObjectOfType<SoundManager>();
     }
 
     // Update is called once per frame
@@ -102,6 +103,7 @@ public class MagicianHandSwap : MonoBehaviour
                     cardObject.GetComponent<CardInfoScr>().ShowCardInfo(item);
                 }
             }
+        soundManager.MagicianSwap();
     }
 
     public void ActivatePlayerSwap(){

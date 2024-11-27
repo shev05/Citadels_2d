@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
@@ -6,6 +7,7 @@ using TMPro;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class PhotonManager : MonoBehaviourPunCallbacks
 {
@@ -22,6 +24,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject player_pref;
     void Start()
     {
+        
         PhotonNetwork.ConnectUsingSettings();
         PhotonNetwork.ConnectToRegion(region);
         Camera mainCamera = Camera.main;
@@ -72,11 +75,14 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         if(!PhotonNetwork.IsConnected)
             return;
 
-        if(nickName.text == "")
-            PhotonNetwork.NickName ="User";
-        else
-            PhotonNetwork.NickName = nickName.text;
-
+        if (!string.IsNullOrEmpty(nickName.text))
+        {
+            Hashtable playerProperties = new Hashtable
+            {
+                { "NickName", nickName.text }
+            };
+            PhotonNetwork.LocalPlayer.SetCustomProperties(playerProperties);
+        }
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = 4;
         PhotonNetwork.CreateRoom(RoomName.text, roomOptions, TypedLobby.Default);
@@ -93,16 +99,24 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
+        // Очистить старый список комнат
+        foreach (Transform child in content)
+        {
+            Destroy(child.gameObject);
+        }
+        allRoomsInfo.Clear();
+
         foreach (RoomInfo info in roomList)
         {
-            for(int i = 0; i < allRoomsInfo.Count; i++){
-                if(allRoomsInfo[i].masterClientId == info.masterClientId)
-                    return;
-            }
+            // Убедитесь, что комната доступна
+            if (info.RemovedFromList || info.PlayerCount == 0)
+                continue;
 
+            // Добавить информацию о комнате в список
             GameListItem listItem = Instantiate(itemPrefab, content);
-            if (listItem != null){
-               listItem.SetInfo(info);
+            if (listItem != null)
+            {
+                listItem.SetInfo(info);
                 allRoomsInfo.Add(info);
             }
         }
@@ -110,6 +124,14 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
+        if (!string.IsNullOrEmpty(nickName.text))
+        {
+            Hashtable playerProperties = new Hashtable
+            {
+                { "NickName", nickName.text }
+            };
+            PhotonNetwork.LocalPlayer.SetCustomProperties(playerProperties);
+        }
         PhotonNetwork.LoadLevel("First");
     }
 
@@ -120,7 +142,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public void JoinButton()
     {
-        PhotonNetwork.JoinRoom(RoomName.text);
+       
+
+        StartCoroutine(WaitAndJoinRoom());
     }
 
     public void LeaveButton()
@@ -132,6 +156,13 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.Destroy(player.gameObject);
         PhotonNetwork.LoadLevel("Menu");
+    }
+    
+    private IEnumerator WaitAndJoinRoom()
+    {
+        yield return new WaitForSeconds(0.5f); // Дайте время для синхронизации
+       
+        PhotonNetwork.JoinRoom(RoomName.text);
     }
 
 }

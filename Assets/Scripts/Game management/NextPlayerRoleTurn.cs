@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Photon.Pun;
 using UnityEngine.UI;
+using UnityEngine.Localization.SmartFormat.PersistentVariables;
 
 public class NextPlayerRoleTurn : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class NextPlayerRoleTurn : MonoBehaviour
     private PhotonView photonView;
     GameTurnManager _gameTurnManager;
     List<Player> players;
+    SoundManager soundManager;
 
 
     private void Start()
@@ -33,10 +35,11 @@ public class NextPlayerRoleTurn : MonoBehaviour
         selectCardButton.gameObject.SetActive(false);
         
         // Подписываемся на событие нажатия кнопки
-        selectCardButton.onClick.AddListener(OnSelectCardButtonClick);
+        //selectCardButton.onClick.AddListener(OnSelectCardButtonClick);
 
         photonView = GetComponent<PhotonView>();
         _gameTurnManager = FindObjectOfType<GameTurnManager>();
+        soundManager = FindObjectOfType<SoundManager>();
 
     }
 
@@ -54,14 +57,16 @@ public class NextPlayerRoleTurn : MonoBehaviour
 
         // Приподнимаем карту
         selectedCard.transform.position += new Vector3(0, liftAmount, 0);
-
+        soundManager.CardDealerSound();
         // Показываем кнопку
         selectCardButton.gameObject.SetActive(true);
     }
 
     // Метод, который вызывается при нажатии кнопки
-    private void OnSelectCardButtonClick()
+    public void OnSelectCardButtonClick(GameObject cardRole)
     {
+        soundManager.CardDealerSound();
+        selectedCard = cardRole;
         cardsOnField = new List<GameObject>();
          // Инициализация карт на поле
         GameObject[] initialCards = GameObject.FindGameObjectsWithTag("Rolecard");

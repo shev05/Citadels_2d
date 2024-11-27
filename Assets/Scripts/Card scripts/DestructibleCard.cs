@@ -4,52 +4,67 @@ using System.Collections.Generic;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class DestructibleCard : MonoBehaviour
+public class DestructibleCard : MonoBehaviour, IPointerClickHandler
 {
     private List<Player> _players;
     private DestructionManager _destructionManager;
+    private float lastClickTime = 0f;
+    private float doubleClickInterval = 0.5f;
 
     private void Start()
     {
         _destructionManager = FindObjectOfType<DestructionManager>();
     }
 
-    private void OnMouseDown()
+    void Update()
     {
-        _players = StartGame.players;
-        var currentPlayer = _players[PhotonNetwork.LocalPlayer.ActorNumber - 1];
-        if (currentPlayer.role.Name.Equals("Warlord") && currentPlayer.isActive)
+        if (Input.GetMouseButtonDown(0)) // Проверяем нажатие левой кнопки мыши
         {
-            _destructionManager.clickedCard = gameObject;
-            if (_destructionManager.FindPlayer() is null || _destructionManager.FindPlayer().role.Name.Equals("Bishop")
-                                                         || gameObject.GetComponent<CardInfoScr>().SelfCard.Name.Equals("Keep"))
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                _destructionManager.clickedCard = null;
-                return;
-            }
-            if (_destructionManager.prevCard is null)
-            {
-                _destructionManager.prevCard = gameObject;
-                _destructionManager.destroyButton.SetActive(true);
-                gameObject.transform.GetChild(0).GetComponent<Image>().color = new Color(1f, 0f, 0f, 0.8f);
-            }
-            else if (_destructionManager.clickedCard.Equals(_destructionManager.prevCard))
-            {
-                _destructionManager.clickedCard = null;
-                _destructionManager.prevCard = null;
-                _destructionManager.destroyButton.SetActive(false);
-                gameObject.transform.GetChild(0).GetComponent<Image>().color = new Color(1f, 1f, 1f);
-            }
-            else if (!_destructionManager.clickedCard.Equals(_destructionManager.prevCard))
-            {
-                _destructionManager.prevCard.transform.GetChild(0).GetComponent<Image>().color = new Color(1f, 1f, 1f);
-                _destructionManager.prevCard = gameObject;
-                gameObject.transform.GetChild(0).GetComponent<Image>().color = new Color(1f, 0f, 0f, 0.8f);
+                Debug.Log("bhhbhhbh");
+                // Проверяем, был ли клик по этому объекту
+                if (hit.transform == transform)
+                {
+                    Debug.Log("sdfgfdfd");
+
+                     // Обновляем время последнего клика
+                }
             }
         }
     }
 
-    
+
+    private void Destruct()
+    {
+        _players = StartGame.players;
+        var currentPlayer = _players[PhotonNetwork.LocalPlayer.ActorNumber - 1];
+        if (currentPlayer.role.Name.Equals("Warlord") && currentPlayer.isActive && currentPlayer.destructionAvaliable)
+        {
+            if (_destructionManager.FindPlayer(gameObject) is null || _destructionManager.FindPlayer(gameObject).role.Name.Equals("Bishop")
+                                                         || gameObject.GetComponent<CardInfoScr>().SelfCard.Name.Equals("Keep"))
+            {
+                return;
+            }
+            _destructionManager.Destruction(gameObject);
+            currentPlayer.destructionAvaliable = false;
+        }
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        float timeSinceLastClick = Time.time - lastClickTime;
+
+        if (timeSinceLastClick <= doubleClickInterval)
+                    {
+                        Debug.Log("jnjnjnjn");
+                        // Двойной клик
+                        Destruct();
+                    }
+                    lastClickTime = Time.time;
+    }
 }
