@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using Unity.VisualScripting;
 using TMPro;
+using System.Threading;
 
 public class CardDealer : MonoBehaviourPun
 {
@@ -21,11 +22,13 @@ public class CardDealer : MonoBehaviourPun
     public Canvas canvas;
     private PhotonView photonView;
     private UpdatePlayerState playerState;
+    private SoundManager soundManager;
 
     private void Start()
     {
         photonView = GetComponent<PhotonView>();
         playerState = FindObjectOfType<UpdatePlayerState>();
+        soundManager = FindObjectOfType<SoundManager>();
         // Создаем колоду карт
         deck = new List<Card>(CardsManager.AllCards);
     }
@@ -35,8 +38,9 @@ public class CardDealer : MonoBehaviourPun
     }
     
     public void StartDealingWithCount(int count){
-        for(int i = 0; i < count; i++)
+        for(int i = 0; i < count; i++){
             IssuingCards(PhotonNetwork.LocalPlayer.ActorNumber);
+        }
         playerState.UpdateCard();
     }
 
@@ -78,7 +82,7 @@ public class CardDealer : MonoBehaviourPun
 
         photonView.RPC("DealingCard", RpcTarget.All, randomIndex, id);
         // Проверяем, какой игрок запросил карты
-                    
+        soundManager.CardDealerSound();            
         // Если это локальный игрок, карты идут в его локальную руку
         StartCoroutine(MoveCardToHand(cardObject, playerHandPositions));
     }
@@ -112,7 +116,9 @@ public class CardDealer : MonoBehaviourPun
         if(id != PhotonNetwork.LocalPlayer.ActorNumber)
             Destroy(cardObject);
     }
-    
+    IEnumerator Timeout(){
+        yield return new WaitForSeconds(animationDuration / 2);
+    }
 
     
 }

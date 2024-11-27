@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.UI;
 
 public class ThiefPlayer : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class ThiefPlayer : MonoBehaviour
     // Start is called before the first frame update
     public GameObject ThiefPanel;
     PhotonView photonView;
+    public List<Button> buttons;
     void Start()
     {
         photonView = GetComponent<PhotonView>();
@@ -51,7 +53,8 @@ public class ThiefPlayer : MonoBehaviour
             player.robbed = true;
     }
     void HidePanel(){
+        
         ThiefPanel.SetActive(false);
-        StartGame.players[PhotonNetwork.LocalPlayer.ActorNumber - 1].haveUlt = false;
+        StartGame.players[PhotonNetwork.LocalPlayer.ActorNumber - 1].haveUlt = false;  
     }
 }

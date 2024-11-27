@@ -6,20 +6,24 @@ using Photon.Pun;
 using UnityEngine.UI;
 using TMPro;
 
-public class StartGame : MonoBehaviour
+public class StartGame : MonoBehaviourPunCallbacks
 {
     static public List<Player> players;
     static public int round;
     private PhotonView photonView;
+    public List<TMP_Text> nicknames;
+    private string[] nicks = new string[4];
     [SerializeField] Button button;
     [SerializeField] GameObject[] kings;
     private UpdatePlayerState playerState;
+    private int playerNum = 0;
+
 
     private void Start()
     {
         photonView = GetComponent<PhotonView>();
         playerState = FindObjectOfType<UpdatePlayerState>();
-
+        
     }
     public void SendButton()
     {
@@ -27,6 +31,7 @@ public class StartGame : MonoBehaviour
         {
             int randomIndex = UnityEngine.Random.Range(0, PhotonNetwork.PlayerList.Length);
             photonView.RPC("start", RpcTarget.AllBuffered, randomIndex);
+            photonView.RPC("W", RpcTarget.AllBuffered);
             playerState.UpdateMoney();
             playerState.UpdateCard();
         }
@@ -92,5 +97,49 @@ public class StartGame : MonoBehaviour
 
     void RemoveButton(){
         Destroy(button.gameObject);
+    }
+
+    [PunRPC]
+    void SetNickName(string[] nickNames)
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            players[i].nickname = nickNames[i];
+            nicknames[players[i].numberTable].text = nickNames[i];
+        }
+    }
+
+/*public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
+    {
+        base.OnPlayerEnteredRoom(newPlayer);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            string nickName = newPlayer.CustomProperties.ContainsKey("NickName")
+                ? newPlayer.CustomProperties["NickName"].ToString()
+                : "Player";
+            nicks[playerNum++] = nickName;
+            Debug.Log("qwerty " + nickName);
+        }
+    }*/
+    [PunRPC]
+    public IEnumerator W()
+    {
+        foreach (var player in players)
+        {
+            if (PhotonNetwork.LocalPlayer.ActorNumber == player.id)
+            {
+                string nickName = PhotonNetwork.LocalPlayer.CustomProperties.ContainsKey("NickName")
+                    ? PhotonNetwork.LocalPlayer.CustomProperties["NickName"].ToString()
+                    : "Player";
+                photonView.RPC("AddNickname", RpcTarget.All, nickName);
+            }
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
+    [PunRPC]
+    public void AddNickname(string nick)
+    {
+        players[playerNum].nickname = nick;
+        nicknames[players[playerNum++].numberTable].text = nick;
     }
 }

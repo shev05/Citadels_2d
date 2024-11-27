@@ -21,11 +21,13 @@ public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler,
     List<Player> players;
     PhotonView photonView;
     private UpdatePlayerState playerState;
+    private SoundManager soundManager;
 
 
     void Start(){
         photonView = GetComponent<PhotonView>();
         playerState = FindObjectOfType<UpdatePlayerState>();
+        soundManager = FindObjectOfType<SoundManager >();
     }
 
     public void OnDrop(PointerEventData eventData)
@@ -134,6 +136,7 @@ public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler,
                 CheckedPassivePurple(players[indexPlayer], players[indexPlayer].cards[cardIndex]);
         players[indexPlayer].cards.RemoveAt(cardIndex);
         players[indexPlayer].money -= cost;
+        soundManager.BuildedSound();
         
     }
     

@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     public RoleCard role;
     // List <Card> cards = new List<Card>();
     public int id;
+    public string nickname;
     public int table = 1;
     public int numberTable;
     public bool isLocal;
@@ -21,6 +22,7 @@ public class Player : MonoBehaviour
     public bool addMoney = true;
     public bool robbed = false;
     public bool isKill = false;
+    public bool destructionAvaliable = true;
     public bool isEndFirst = false;
     public int score = 0;
     public int roundForTown = 100;

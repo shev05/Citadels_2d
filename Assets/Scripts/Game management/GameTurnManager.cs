@@ -7,6 +7,7 @@ using Photon.Pun;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Threading;
 
 public class GameTurnManager : MonoBehaviour
 {
@@ -24,9 +25,13 @@ public class GameTurnManager : MonoBehaviour
     public List<GameObject> ButtonRole; 
     private UpdatePlayerState playerState;
     private CardDealer cardDealer;
-    public TMP_Text textWin;
-
+    private SoundManager soundManager;
+    public GameObject WinPanel;
+    public List<TMP_Text> TextEnd;
+    public GameObject ButtonSide;
+    private bool isPanelVisible = true;
     public static int activePlayer = 0;
+    public TMP_Text textButton;
 
     
     // Start is called before the first frame update
@@ -36,6 +41,7 @@ public class GameTurnManager : MonoBehaviour
         _chooseRole = FindObjectOfType<ChooseRole>();
         playerState = FindObjectOfType<UpdatePlayerState>();
         cardDealer = FindObjectOfType<CardDealer>();
+        soundManager = FindObjectOfType<SoundManager>();
     }
 
     // Update is called once per frame
@@ -54,12 +60,37 @@ public class GameTurnManager : MonoBehaviour
 
     [PunRPC]
     void ShowRole(string role, bool isKill){
+        string roles = "";
         if(!isKill){
-            roleTexts[tableNumber].text = "<s>" + role + "</s>";
+            Debug.Log(role);
+            LocalizationHelper.GetLocalizedString("UI", role, text => 
+            {
+                roles = text;
+                roleTexts[tableNumber].text = "<s>" + roles + "</s>";
+            });
+            var roleInfo = roleTexts[tableNumber].transform.parent.GetChild(1).GetChild(0).GetComponent<TMP_Text>();
+            LocalizationHelper.GetLocalizedString("UI", role + "Text", text => 
+            {
+                roleInfo.text = "<s>" + text + "</s>";
+            });           
+            soundManager.AssassinKill();
             activePlayer++;
+
         }
-        else
-            roleTexts[tableNumber].text = role;
+        else{
+            Debug.Log(role);
+            LocalizationHelper.GetLocalizedString("UI", role, text => 
+            {
+                roles = text;
+                roleTexts[tableNumber].text = roles;
+            });
+            var roleInfo = roleTexts[tableNumber].transform.parent.GetChild(1).GetChild(0).GetComponent<TMP_Text>();
+            LocalizationHelper.GetLocalizedString("UI", role + "Text", text => 
+            {
+                roleInfo.text = text;
+            });
+            soundManager.RoleSound(role);
+        }
 
     }
 
@@ -79,8 +110,9 @@ public class GameTurnManager : MonoBehaviour
                         }
             playerState.UpdateKing();
             photonView.RPC("PassiveBool", RpcTarget.All);
-            if(CheckedEnd())
+            if(CheckedEnd()){
                 _chooseRole.startChoosing();
+            }
             nextTurnButton.gameObject.SetActive(false);
             return;
         }
@@ -102,25 +134,30 @@ public class GameTurnManager : MonoBehaviour
         var player = turnBasedPlayerList[activePlayer];
         tableNumber = player.numberTable;
             if(player.id == PhotonNetwork.LocalPlayer.ActorNumber){
-                if(player.isKill){
-                    photonView.RPC("ShowRole", RpcTarget.All, player.role.Name, false);
-                    ButtonNextTurn_Click();
-                }
-                else{
-                    if(player.robbed)
-                        foreach(var p in turnBasedPlayerList){
-                            if(p.role.Name == "Thief"){
-                                photonView.RPC("Robbed", RpcTarget.All, player.id, p.id);
-                                playerState.UpdateMoney();
-                                }
-                    }
-                    CheckedArchitect();
-                    photonView.RPC("ShowRole", RpcTarget.All, player.role.Name, true);
-                    choisePanel.SetActive(true);    
-                }
+                WriteRole();
             }
     }
-
+    private void WriteRole(){
+        var player = turnBasedPlayerList[activePlayer];
+        if(player.isKill){
+            photonView.RPC("ShowRole", RpcTarget.All, player.role.Name, false);
+            StartCoroutine(DelayBeforeNextTurn()); // Задержка перед переходом к следующему ходу
+        }
+        else{
+            if(player.robbed)
+                foreach(var p in turnBasedPlayerList){
+                    if(p.role.Name == "Thief"){
+                        //здесь
+                        StartCoroutine(DelayBeforeRobbed(player.id, p.id, player.role.Name)); // Задержка перед краже
+                    }
+                }
+            else{
+                photonView.RPC("ShowRole", RpcTarget.All, player.role.Name, true);
+                CheckedArchitect();
+                choisePanel.SetActive(true); 
+            }   
+        }
+    }
     [PunRPC]
     private void ChooseMoney(){
         var player = turnBasedPlayerList[activePlayer++];
@@ -162,24 +199,31 @@ public class GameTurnManager : MonoBehaviour
     public void ZeroActivePlayer()
     {
         activePlayer = 0;
-        StartGame.round += 1;
     }
 
     [PunRPC]
     void PassiveBool(){
+        soundManager.NextTurnSound();    
+        StartGame.round += 1;
         foreach(var player in StartGame.players){
             player.isKill = false; 
             player.robbed = false;
             player.haveUlt = true;
             player.addMoney = true;
+            player.destructionAvaliable = true;
             player.placeableCardCount = 1;
             player.haveSmithyUlt = true;
             player.haveLaboratoryUlt = true;
         }
         foreach(var item in roleTexts)
+        {
             item.text = "";
-        foreach (GameObject roleBut in ButtonRole)
-            roleBut.gameObject.SetActive(true);
+            var roleInfo = item.transform.parent.GetChild(1).GetChild(0).GetComponent<TMP_Text>();
+            roleInfo.text = "";
+        }
+        foreach (var roleBut in ButtonRole)
+            roleBut.SetActive(true);
+        KillPlayer.roleNameKill = "";
                     
                 
     }
@@ -189,6 +233,7 @@ public class GameTurnManager : MonoBehaviour
         int moneyCount = players[idRobPlayer - 1].money;
         players[idRobPlayer - 1].money = 0;
         players[idThiefPlayer - 1].money += moneyCount;
+        soundManager.ThiefSteal();
     }
 
     void CheckedArchitect(){
@@ -243,9 +288,34 @@ public class GameTurnManager : MonoBehaviour
             idScore.Add(player.score);
         }
         int index = idScore.IndexOf(idScore.Max());
-        textWin.gameObject.SetActive(true);
-        textWin.text = $"Победил игрок с айди №{players[index].id} с количеством очков {players[index].score}."+
-                      $"\n Ваше количество очков {players[PhotonNetwork.LocalPlayer.ActorNumber - 1].score}";
+        WinPanel.SetActive(true);
+        if(players[PhotonNetwork.LocalPlayer.ActorNumber - 1].id == players[index].id)
+            LocalizationHelper.GetLocalizedString("UI", "WinText", text => 
+            {
+                TextEnd[0].text = text;
+            });
+        else
+            LocalizationHelper.GetLocalizedString("UI", "LoseText", text => 
+            {
+                TextEnd[0].text = text;
+            });
+        LocalizationHelper.GetLocalizedString("UI", "ScoreText", text => 
+        {
+            TextEnd[1].text = text + players[PhotonNetwork.LocalPlayer.ActorNumber - 1].score;
+        });
+        LocalizationHelper.GetLocalizedString("UI", "ScoreWinText", text => 
+        {
+            TextEnd[2].text = text + players[index].score;
+        });
+        LocalizationHelper.GetLocalizedString("UI", "RoundText", text => 
+        {
+            TextEnd[3].text = text + StartGame.round;
+        });
+        if(PhotonNetwork.LocalPlayer.ActorNumber == players[index].id)
+            soundManager.WinSound();
+        else soundManager.LoseSound();
+        ButtonSide.SetActive(true);
+        
     }
     bool CheckedAllTypes(Player player){
         List<int> color = new List<int>{0,0,0,0,0};
@@ -270,5 +340,28 @@ public class GameTurnManager : MonoBehaviour
             return false;  
         else 
             return true;  
+    }
+    private IEnumerator DelayBeforeNextTurn(){
+        yield return new WaitForSeconds(3.0f); 
+        ButtonNextTurn_Click();
+    }
+
+        // Метод-корутина для задержки перед вызовом Robbed
+    private IEnumerator DelayBeforeRobbed(int robbedPlayerId, int thiefPlayerId, string role){
+        photonView.RPC("Robbed", RpcTarget.All, robbedPlayerId, thiefPlayerId);
+        playerState.UpdateMoney();
+        yield return new WaitForSeconds(3.0f); 
+        photonView.RPC("ShowRole", RpcTarget.All, role, true);
+        CheckedArchitect();
+        choisePanel.SetActive(true); 
+    }
+    public void Click_Button(){
+        isPanelVisible = !isPanelVisible;
+        WinPanel.SetActive(isPanelVisible);
+
+        LocalizationHelper.GetLocalizedString("UI", isPanelVisible ? "ButtonHide" : "ButtonShow", localizedText =>
+        {
+            textButton.text = localizedText;
+        });
     }
 }

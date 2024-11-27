@@ -84,6 +84,9 @@ MonoBehaviour:
   - LaboratoryAddMoney
   - ResurrectCard
   - GetCard
+  - AddNickname
+  - SetNickName
+  - W
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0

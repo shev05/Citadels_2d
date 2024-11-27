@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class TouchCardLoc : MonoBehaviour
+public class TouchCardLoc : MonoBehaviour, IPointerClickHandler
 {
     private TurnChoiseCard cardSelectionManager;
+    private float lastClickTime = 0f;
+    private float doubleClickInterval = 0.5f;
 
     private void Start()
     {
@@ -12,9 +15,14 @@ public class TouchCardLoc : MonoBehaviour
         cardSelectionManager = FindObjectOfType<TurnChoiseCard>();
     }
 
-    private void OnMouseDown()
+    public void OnPointerClick(PointerEventData eventData)
     {
-        // Устанавливаем текущую карту как выделенную
-        cardSelectionManager.SetSelectedCard(gameObject);
-    }
+        float timeSinceLastClick = Time.time - lastClickTime;
+
+        if (timeSinceLastClick <= doubleClickInterval)
+            {
+                cardSelectionManager.ChoiseButton_Click(gameObject);
+            }
+        lastClickTime = Time.time;
+    }        
 }

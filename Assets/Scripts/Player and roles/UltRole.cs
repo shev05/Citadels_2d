@@ -65,6 +65,7 @@ public class UltScript : MonoBehaviour
             {
                 photonView.RPC("MerchantUlt", RpcTarget.All, PhotonNetwork.LocalPlayer.ActorNumber);
                 playerState.UpdateMoney();
+                players[PhotonNetwork.LocalPlayer.ActorNumber - 1].haveUlt = false;
             }
             else if(players[indexPlayer].role.Name == "Architect"){
                 cardDealer.StartDealingWithCount(2);
