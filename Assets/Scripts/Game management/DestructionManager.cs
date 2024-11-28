@@ -1,10 +1,6 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
-using TMPro;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +9,6 @@ public class DestructionManager : MonoBehaviour
     private List<Player> _players;
     private PhotonView _photonView;
     public List<GameObject> hands;
-    public GameObject prevCard;
     public GameObject destroyButton;
     public GameObject graveyardPanel;
     private UpdatePlayerState playerState;
@@ -23,10 +18,8 @@ public class DestructionManager : MonoBehaviour
     public GameObject cardPrefab;
     private SoundManager soundManager;
     
-    // Start is called before the first frame update
     void Start()
     {
-        prevCard = null;
         _photonView = GetComponent<PhotonView>();
         playerState = FindObjectOfType<UpdatePlayerState>();
         soundManager = FindObjectOfType<SoundManager>();
@@ -46,13 +39,7 @@ public class DestructionManager : MonoBehaviour
             _photonView.RPC("DestroyCard", RpcTarget.All, cardIndex, playerIndex,
                 PhotonNetwork.LocalPlayer.ActorNumber - 1);
             playerState.UpdateMoney();
-            prevCard = null;
-            clickedCard = null;
             destroyButton.SetActive(false);
-        }
-        else
-        {
-            Debug.Log("Нет деняк");
         }
     }
 
@@ -60,7 +47,6 @@ public class DestructionManager : MonoBehaviour
     void DestroyCard(int cardIndex, int playerIndex, int warlordIndex)
     {
         _players = StartGame.players;
-        // Находим объект по его PhotonView ID
         GameObject cardToDestroy = hands[_players[playerIndex].numberTable]
             .transform.GetChild(cardIndex).gameObject;
         Card card = (Card)cardToDestroy.GetComponent<CardInfoScr>().SelfCard;
@@ -73,11 +59,13 @@ public class DestructionManager : MonoBehaviour
             if(card.Color.Equals("Purple")) RemoveCardEffect(playerIndex, card.Name);
             _players[playerIndex].placedCards.Remove(card);
             Destroy(cardToDestroy);
+            Debug.Log(_players[warlordIndex].nickname + " destroyed " 
+                                                      + _players[playerIndex].nickname + "`s " + card.Name);
             soundManager.WarlordDestroy();
         }
         else
         {
-            Debug.LogWarning("Карта не найдена для удаления.");
+            Debug.LogWarning("Destructible card not found");
         }
     }
 
@@ -98,10 +86,10 @@ public class DestructionManager : MonoBehaviour
         if (handIndex == -1) return null;
         return _players.Find(player => player.numberTable == handIndex);
     }
-    
-    public bool HasGreatWall(Transform hand)
+
+    private bool HasGreatWall(Transform hand)
     {
-        return hand.GetComponentsInChildren<CardInfoScr>() // Получаем все компоненты MyComponent
+        return hand.GetComponentsInChildren<CardInfoScr>()
             .Any(component => component.SelfCard.Name == "Greatwall");
     }
 
@@ -121,6 +109,7 @@ public class DestructionManager : MonoBehaviour
         }
         if (PhotonNetwork.LocalPlayer.ActorNumber == graveyardPlayerId)
                 graveyardPanel.SetActive(true);
+        Debug.Log(_players[graveyardPlayerId - 1].nickname + " can resurrect destroyed card");
     }
 
     public void GetResurrectedCard(){

@@ -2,16 +2,12 @@ using System.Collections;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
-using Unity.VisualScripting;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class PhotonManager : MonoBehaviourPunCallbacks
 {
-    // Start is called before the first frame update
     [SerializeField] string region;
     [SerializeField] TMP_InputField nickName;
 
@@ -24,42 +20,15 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject player_pref;
     void Start()
     {
-        
         PhotonNetwork.ConnectUsingSettings();
         PhotonNetwork.ConnectToRegion(region);
+        
         Camera mainCamera = Camera.main;
-
-        /*if(SceneManager.GetActiveScene().name == "First")
-        {
-            /*if(PhotonNetwork.CurrentRoom.PlayerCount == 1){
-                float screenHeight = mainCamera.orthographicSize * 2; 
-                Vector3 spawnPosition = new Vector3(0, -screenHeight / 2 + 0.5f, 0); 
-                player = PhotonNetwork.Instantiate(player_pref.name, spawnPosition, Quaternion.identity);
-                Sprite newSprite = Resources.Load<Sprite>("picture/Player/player1");
-                player.GetComponent<SpriteRenderer>().sprite = newSprite;
-            }
-            if(PhotonNetwork.CurrentRoom.PlayerCount == 2){
-                float screenHeight = mainCamera.orthographicSize * 2; 
-                Vector3 spawnPosition = new Vector3(0, screenHeight / 2 - 0.5f, 0);
-                player = PhotonNetwork.Instantiate(player_pref.name, spawnPosition, Quaternion.identity);
-                Sprite newSprite = Resources.Load<Sprite>("picture/Player/player2");
-                player.GetComponent<SpriteRenderer>().sprite = newSprite;
-            }
-            if(PhotonNetwork.CurrentRoom.PlayerCount == 3){
-                float screenWidth = mainCamera.orthographicSize * mainCamera.aspect;
-                Vector3 spawnPosition = new Vector3(-screenWidth + 0.5f, 0, 0);
-                player = PhotonNetwork.Instantiate(player_pref.name, spawnPosition, Quaternion.identity);
-                Sprite newSprite = Resources.Load<Sprite>("picture/Player/player3");
-                player.GetComponent<SpriteRenderer>().sprite = newSprite;
-            }
-            
-        }*/
     }
 
     public override void OnConnectedToMaster()
     {
         Debug.Log("Вы подключены к:" + PhotonNetwork.CloudRegion);
-        Debug.Log(nickName.text);
     
         if(!PhotonNetwork.InLobby)
             PhotonNetwork.JoinLobby();
@@ -94,7 +63,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
-        Debug.LogError("Плаки плаки?)");
+        Debug.LogError("Room creation failed");
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -142,8 +111,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     public void JoinButton()
     {
-       
-
         StartCoroutine(WaitAndJoinRoom());
     }
 

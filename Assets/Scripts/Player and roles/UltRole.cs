@@ -1,17 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon;
 using Photon.Pun;
-using Unity.VisualScripting;
-using TMPro;
-using UnityEngine.AI;
 
 public class UltScript : MonoBehaviour
 {
-    public GameObject KillPanel; // Ссылка на Panel всплывающего окна
-    public GameObject ThiefPanel; // Ссылка на Panel всплывающего окна
-    public GameObject MagicianPanel; // Ссылка на Panel всплывающего окна
+    public GameObject KillPanel;
+    public GameObject ThiefPanel;
+    public GameObject MagicianPanel;
     public List<GameObject> ButtonRole;
     public GameObject destructionPanel;
     public GameObject panel;
@@ -22,8 +17,6 @@ public class UltScript : MonoBehaviour
     private CardDealer cardDealer;
     private UpdatePlayerState playerState;
 
-
-    // Start is called before the first frame update
     void Start()
     {
         photonView = GetComponent<PhotonView>();
@@ -72,7 +65,7 @@ public class UltScript : MonoBehaviour
                 players[indexPlayer].haveUlt = false;
             }
             else if(players[indexPlayer].role.Name == "Warlord")
-                destructionPanel.SetActive(!destructionPanel.activeSelf); // Не готово, нужно предусмотреть, что карта точно выбрана
+                destructionPanel.SetActive(!destructionPanel.activeSelf);
         }
     }
 
@@ -99,10 +92,12 @@ public class UltScript : MonoBehaviour
             if(card.Color == color || card.Name.Equals("Schoolofmagic"))
                 addMoney++;
         }
-        if(addMoney != 0){
+
+        if (addMoney != 0)
+        {
             photonView.RPC("AddMoneyPlayer", RpcTarget.All, addMoney, indexPlayer);
             playerState.UpdateMoney();
-            }
+        }
 
     }
 
@@ -110,13 +105,14 @@ public class UltScript : MonoBehaviour
     void AddMoneyPlayer(int addMoney, int indexPlayer){
         var player = StartGame.players[indexPlayer];
         player.money += addMoney;
+        Debug.Log(player.nickname + "got " + addMoney + " money");
     }
 
     [PunRPC]
-    void MerchantUlt(int id){
+    void MerchantUlt(int id)
+    {
         var player = StartGame.players[id - 1];
         player.money += 1;
+        Debug.Log("Merchant got extra coin");
     }
- 
-
 }

@@ -1,6 +1,5 @@
 using UnityEngine;
 using Photon.Pun;
-using UnityEngine.UI;
 using TMPro;
 
 public class GameManager : MonoBehaviour
@@ -24,10 +23,4 @@ public class GameManager : MonoBehaviour
     {
         textlastMessage.text+= nick + ": " + message + "\n"; 
     }
-
-    /*[PunRPC]
-    public void DealCards()
-    {
-        StartCoroutine(dealer.DealCards());
-    }*/
 }

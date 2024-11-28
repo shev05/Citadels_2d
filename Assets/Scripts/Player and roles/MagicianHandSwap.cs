@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
@@ -19,8 +18,6 @@ public class MagicianHandSwap : MonoBehaviour
     private CardDealer cardDealer;
     private SoundManager soundManager;
 
-    
-    // Start is called before the first frame update
     void Start()
     {
         _photonView = GetComponent<PhotonView>();
@@ -29,7 +26,6 @@ public class MagicianHandSwap : MonoBehaviour
         soundManager = FindObjectOfType<SoundManager>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -64,7 +60,7 @@ public class MagicianHandSwap : MonoBehaviour
         }
     }
 
-    public void SwapPlayerCards(int tableNumber)
+    private void SwapPlayerCards(int tableNumber)
     {
         _players = StartGame.players;
         var swappedPlayer = _players.First(item => item.numberTable == tableNumber);
@@ -86,24 +82,29 @@ public class MagicianHandSwap : MonoBehaviour
         var localPlayer = _players[localPlayerId - 1];
 
         if (PhotonNetwork.LocalPlayer.ActorNumber == playerId ||
-            PhotonNetwork.LocalPlayer.ActorNumber == localPlayerId ){
-                foreach (Transform item in hand.transform)
-                {
-                    Destroy(item.gameObject);
-                }
+            PhotonNetwork.LocalPlayer.ActorNumber == localPlayerId)
+        {
+            foreach (Transform item in hand.transform)
+            {
+                Destroy(item.gameObject);
             }
+        }
+
         List<Card> tempHand = new List<Card>(localPlayer.cards);
         localPlayer.cards = new List<Card>(swappablePlayer.cards);
         swappablePlayer.cards = new List<Card>(tempHand);
-        if (PhotonNetwork.LocalPlayer.ActorNumber  == playerId ||
-            PhotonNetwork.LocalPlayer.ActorNumber  == localPlayerId ){
-                foreach (var item in _players[PhotonNetwork.LocalPlayer.ActorNumber - 1].cards)
-                {
-                    var cardObject = Instantiate(cardPrefab, hand.transform, false);
-                    cardObject.GetComponent<CardInfoScr>().ShowCardInfo(item);
-                }
+        if (PhotonNetwork.LocalPlayer.ActorNumber == playerId ||
+            PhotonNetwork.LocalPlayer.ActorNumber == localPlayerId)
+        {
+            foreach (var item in _players[PhotonNetwork.LocalPlayer.ActorNumber - 1].cards)
+            {
+                var cardObject = Instantiate(cardPrefab, hand.transform, false);
+                cardObject.GetComponent<CardInfoScr>().ShowCardInfo(item);
             }
+        }
+
         soundManager.MagicianSwap();
+        Debug.Log(localPlayer.nickname + " swapped his cards with " + swappablePlayer.nickname);
     }
 
     public void ActivatePlayerSwap(){
@@ -147,9 +148,6 @@ public class MagicianHandSwap : MonoBehaviour
         }
         _photonView.RPC("DropCards", RpcTarget.All, droppedCards, PhotonNetwork.LocalPlayer.ActorNumber);
         cardDealer.StartDealingWithCount(droppedCards.Length);
-        foreach(var item in _players[PhotonNetwork.LocalPlayer.ActorNumber - 1].cards){
-            Debug.Log("left " + item.Name);
-        }
         dropPanel.SetActive(false);
     }
 

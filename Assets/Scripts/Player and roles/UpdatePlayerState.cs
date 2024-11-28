@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
-using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 
@@ -13,7 +11,6 @@ public class UpdatePlayerState : MonoBehaviour
     public List<TMP_Text> moneyCount;
     public List<GameObject> Crown;
     
-    // Start is called before the first frame update
     void Start()
     {
         photonView = GetComponent<PhotonView>();
