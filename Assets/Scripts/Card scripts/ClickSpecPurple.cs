@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ClickSpecPurple : MonoBehaviour
 {
-    private float lastClickTime = 0f; // Время последнего клика
-    private float doubleClickThreshold = 0.3f; // Интервал для двойного клика в секундах
+    private float lastClickTime = 0f;
+    private float doubleClickThreshold = 0.3f;
     PurpleActive purpleActive;
 
     void Start()
@@ -15,13 +13,12 @@ public class ClickSpecPurple : MonoBehaviour
 
     void Update()
     {
-        // Проверяем, был ли клик мыши
-        if (Input.GetMouseButtonDown(0)) // 0 - левая кнопка мыши
+        if (Input.GetMouseButtonDown(0))
         {
             float currentTime = Time.time;
             if (currentTime - lastClickTime <= doubleClickThreshold)
             {
-                TogglePopup(); // Если двойной клик
+                TogglePopup();
             }
             lastClickTime = currentTime;
         }

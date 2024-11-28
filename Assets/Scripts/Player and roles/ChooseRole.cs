@@ -1,10 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class ChooseRole : MonoBehaviour
 {
@@ -16,21 +13,11 @@ public class ChooseRole : MonoBehaviour
     public List<RoleCard> removed = new List<RoleCard>();
     static public List<Player> players;
     private PhotonView photonView;
-
-
-
-
-    // Start is called before the first frame update
+    
     void Start()
     {
         photonView = GetComponent<PhotonView>();
         roles = new List<RoleCard>(RoleCardsManager.AllRoles);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     void RemoveRoles(){
@@ -63,7 +50,6 @@ public class ChooseRole : MonoBehaviour
     public void Choosing(){
         int indexPlayer = 0;
         players = StartGame.players;
-        Debug.Log(StartGame.players.Count);
         roles = new List<RoleCard>(RoleCardsManager.AllRoles);
         foreach (var player in players)
             if(player.isKing)
@@ -73,7 +59,7 @@ public class ChooseRole : MonoBehaviour
         }
     }
 
-    public void ActivateChoosing()
+    private void ActivateChoosing()
     {
         photonView.RPC("DeactivateRemovedCardSlots", RpcTarget.All);
         RemoveRoles();
@@ -103,6 +89,5 @@ public class ChooseRole : MonoBehaviour
     {
         foreach(var slot in removedCardSlots) slot.SetActive(false);
     }
-
     
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,6 +39,7 @@ public class StartGame : MonoBehaviourPunCallbacks
     [PunRPC]
     void start(int randomIndex){
         RemoveButton();
+        Debug.Log("Game started");
         int numberPlayer = PhotonNetwork.LocalPlayer.ActorNumber;
         int numberTable;
         players = new List<Player>();
@@ -108,19 +108,7 @@ public class StartGame : MonoBehaviourPunCallbacks
             nicknames[players[i].numberTable].text = nickNames[i];
         }
     }
-
-/*public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
-    {
-        base.OnPlayerEnteredRoom(newPlayer);
-        if (PhotonNetwork.IsMasterClient)
-        {
-            string nickName = newPlayer.CustomProperties.ContainsKey("NickName")
-                ? newPlayer.CustomProperties["NickName"].ToString()
-                : "Player";
-            nicks[playerNum++] = nickName;
-            Debug.Log("qwerty " + nickName);
-        }
-    }*/
+    
     [PunRPC]
     public IEnumerator W()
     {

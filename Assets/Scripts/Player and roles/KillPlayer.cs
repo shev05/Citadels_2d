@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 
 public class KillPlayer : MonoBehaviour
 {
-    // Start is called before the first frame update
     public GameObject KillPanel;
     PhotonView photonView;
     public static string roleNameKill;
@@ -13,12 +10,7 @@ public class KillPlayer : MonoBehaviour
     {
         photonView = GetComponent<PhotonView>();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
     public void KillThief(){
         HidePanel();
         photonView.RPC("Kill", RpcTarget.All, "Thief");
@@ -54,6 +46,7 @@ public class KillPlayer : MonoBehaviour
         foreach(var player in StartGame.players)
             if(player.role.Name == role)
                 player.isKill = true;
+        Debug.Log(role + " got killed");
     }
     void HidePanel(){
         KillPanel.SetActive(false);

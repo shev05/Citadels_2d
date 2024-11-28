@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -11,18 +9,16 @@ public class TouchCardLoc : MonoBehaviour, IPointerClickHandler
 
     private void Start()
     {
-        // Ищем `CardSelectionManager` в сцене
         cardSelectionManager = FindObjectOfType<TurnChoiseCard>();
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
         float timeSinceLastClick = Time.time - lastClickTime;
-
         if (timeSinceLastClick <= doubleClickInterval)
-            {
-                cardSelectionManager.ChoiseButton_Click(gameObject);
-            }
+        {
+            cardSelectionManager.ChoiseButton_Click(gameObject);
+        }
         lastClickTime = Time.time;
-    }        
+    }
 }

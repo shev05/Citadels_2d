@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Photon.Pun;
 using UnityEngine;
@@ -11,18 +9,11 @@ public class PurpleActive : MonoBehaviour
     UpdatePlayerState playerState;
     public GameObject cardPlace;
     public GameObject cardPanel;
-    // Start is called before the first frame update
     void Start()
     {
         photonView = GetComponent<PhotonView>();
         cardDealer = FindObjectOfType<CardDealer>();
         playerState = FindObjectOfType<UpdatePlayerState>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void ActiveCard(GameObject card){

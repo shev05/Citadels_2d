@@ -1374,7 +1374,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -7.8519897, y: 5.005005}
+  m_AnchoredPosition: {x: -7.8519287, y: 5.005005}
   m_SizeDelta: {x: -1189.046, y: -910.99}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &160918976
@@ -5678,7 +5678,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 33.013, y: -27.789185}
+  m_AnchoredPosition: {x: 33.01306, y: -27.789185}
   m_SizeDelta: {x: -761.03, y: -517.33}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &625955650
@@ -6119,7 +6119,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerHandPositions: {fileID: 1898512574}
-  tablePosition: {fileID: 0}
   cardParent: {fileID: 1478776543}
   cardsToDeal: 4
   animationDuration: 0.5
@@ -8686,6 +8685,7 @@ GameObject:
   - component: {fileID: 914808596}
   - component: {fileID: 914808597}
   - component: {fileID: 914808598}
+  - component: {fileID: 914808599}
   m_Layer: 0
   m_Name: PhotonManager
   m_TagString: Untagged
@@ -8962,7 +8962,6 @@ MonoBehaviour:
   - {fileID: 1337497202}
   - {fileID: 1967558127}
   - {fileID: 775807562}
-  prevCard: {fileID: 0}
   destroyButton: {fileID: 0}
   graveyardPanel: {fileID: 525380313}
   storage: {fileID: 1898512573}
@@ -9175,6 +9174,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 057ab68142bc50e498e8b286e237d89f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &914808599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 914808577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52810bcd96fb6ff42ac0774851323bd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &925183590
@@ -15355,7 +15366,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 35.330017, y: -0.000061035156}
+  m_AnchoredPosition: {x: 35.329956, y: -0.000061035156}
   m_SizeDelta: {x: -1219, y: -822.16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1662042646

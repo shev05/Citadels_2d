@@ -1,10 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using Photon.Pun;
 using UnityEngine.UI;
-using UnityEngine.Localization.SmartFormat.PersistentVariables;
 
 public class NextPlayerRoleTurn : MonoBehaviour
 {
@@ -14,13 +11,12 @@ public class NextPlayerRoleTurn : MonoBehaviour
 
     public GameObject cardPrefab;
 
-    public Button selectCardButton; // Ссылка на кнопку выбора карты
-    private GameObject selectedCard; // Ссылка на выделенную карту
-    private Vector3 originalPosition; // Исходное положение предыдущей карты
-    private float liftAmount = 5f; // Сколько приподнять карту
+    public Button selectCardButton;
+    private GameObject selectedCard;
+    private Vector3 originalPosition;
+    private float liftAmount = 5f;
     public List<GameObject> cardsOnField = new List<GameObject>();
-
-    // Список для сохранения оставшихся карт
+    
     private List<GameObject> remainingCards;
     private PhotonView photonView;
     GameTurnManager _gameTurnManager;
@@ -30,39 +26,14 @@ public class NextPlayerRoleTurn : MonoBehaviour
 
     private void Start()
     {
-        
-        // Скрываем кнопку при запуске
         selectCardButton.gameObject.SetActive(false);
-        
-        // Подписываемся на событие нажатия кнопки
-        //selectCardButton.onClick.AddListener(OnSelectCardButtonClick);
 
         photonView = GetComponent<PhotonView>();
         _gameTurnManager = FindObjectOfType<GameTurnManager>();
         soundManager = FindObjectOfType<SoundManager>();
 
     }
-
-    // Метод для установки выделенной карты
-    public void SetSelectedCard(GameObject card)
-    {
-        if (selectedCard != null)
-        {
-            selectedCard.transform.position -= new Vector3(0, liftAmount, 0);
-        }
-
-        // Сохраняем новую карту и ее исходное положение
-        selectedCard = card;
-        originalPosition = selectedCard.transform.position;
-
-        // Приподнимаем карту
-        selectedCard.transform.position += new Vector3(0, liftAmount, 0);
-        soundManager.CardDealerSound();
-        // Показываем кнопку
-        selectCardButton.gameObject.SetActive(true);
-    }
-
-    // Метод, который вызывается при нажатии кнопки
+    
     public void OnSelectCardButtonClick(GameObject cardRole)
     {
         soundManager.CardDealerSound();
@@ -124,7 +95,7 @@ public class NextPlayerRoleTurn : MonoBehaviour
     void NextPlayerTurn(int tableNumber, string[] remainingCardNamesArray)
     {
         if(PhotonNetwork.LocalPlayer.ActorNumber == tableNumber){
-            foreach(var player in StartGame.players)//проверка на полный обход
+            foreach(var player in StartGame.players)
                 if(player.isKing)
                     if(PhotonNetwork.LocalPlayer.ActorNumber == player.id){
                         photonView.RPC("NextStep", RpcTarget.All);
@@ -159,15 +130,6 @@ public class NextPlayerRoleTurn : MonoBehaviour
         return tableNumber;
     }
     void setupPanel(List<string> remainingCardNames){
-        foreach (var item in remainingCardNames)
-        {
-            Debug.Log(item + "x");
-        }
-
-        foreach (var item in _roles)
-        {
-            Debug.Log(item.Name + "z");
-        }
         Remove_roles(remainingCardNames);
         foreach (var card in _roles){
             GameObject cardObject = Instantiate(cardPrefab, cardField.transform, false); // Создаем объект внутри канваса
@@ -203,9 +165,10 @@ public class NextPlayerRoleTurn : MonoBehaviour
             if(role.Name == name)
                 players[id - 1].role = role;
         }
+        Debug.Log(players[id - 1].nickname + " chose " + name);
     }
-    
-    public void ClearHand()
+
+    private void ClearHand()
     {
         foreach (Transform role in cardField.transform)
         {

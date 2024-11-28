@@ -1,13 +1,10 @@
 using System.Linq;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Threading;
 
 public class GameTurnManager : MonoBehaviour
 {
@@ -33,8 +30,6 @@ public class GameTurnManager : MonoBehaviour
     public static int activePlayer = 0;
     public TMP_Text textButton;
 
-    
-    // Start is called before the first frame update
     void Start()
     {
         photonView = GetComponent<PhotonView>();
@@ -42,12 +37,6 @@ public class GameTurnManager : MonoBehaviour
         playerState = FindObjectOfType<UpdatePlayerState>();
         cardDealer = FindObjectOfType<CardDealer>();
         soundManager = FindObjectOfType<SoundManager>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void NextTurn()
@@ -62,7 +51,6 @@ public class GameTurnManager : MonoBehaviour
     void ShowRole(string role, bool isKill){
         string roles = "";
         if(!isKill){
-            Debug.Log(role);
             LocalizationHelper.GetLocalizedString("UI", role, text => 
             {
                 roles = text;
@@ -75,10 +63,10 @@ public class GameTurnManager : MonoBehaviour
             });           
             soundManager.AssassinKill();
             activePlayer++;
-
+            var player = _players.Find(player => player.numberTable == tableNumber);
+            Debug.Log(player.nickname + " happened to be a " + role + " but got killed");
         }
         else{
-            Debug.Log(role);
             LocalizationHelper.GetLocalizedString("UI", role, text => 
             {
                 roles = text;
@@ -90,6 +78,8 @@ public class GameTurnManager : MonoBehaviour
                 roleInfo.text = text;
             });
             soundManager.RoleSound(role);
+            var player = _players.Find(player => player.numberTable == tableNumber);
+            Debug.Log(player.nickname + " happened to be a " + role);
         }
 
     }
@@ -127,6 +117,7 @@ public class GameTurnManager : MonoBehaviour
         var players = StartGame.players;
         players[idNewKing - 1].isKing = true;
         players[idOldKing - 1].isKing = false;
+        Debug.Log(players[idNewKing - 1].nickname + " bacame the king");
     }
 
     [PunRPC]
@@ -141,13 +132,12 @@ public class GameTurnManager : MonoBehaviour
         var player = turnBasedPlayerList[activePlayer];
         if(player.isKill){
             photonView.RPC("ShowRole", RpcTarget.All, player.role.Name, false);
-            StartCoroutine(DelayBeforeNextTurn()); // Задержка перед переходом к следующему ходу
+            StartCoroutine(DelayBeforeNextTurn());
         }
         else{
             if(player.robbed)
                 foreach(var p in turnBasedPlayerList){
                     if(p.role.Name == "Thief"){
-                        //здесь
                         StartCoroutine(DelayBeforeRobbed(player.id, p.id, player.role.Name)); // Задержка перед краже
                     }
                 }
@@ -163,6 +153,7 @@ public class GameTurnManager : MonoBehaviour
         var player = turnBasedPlayerList[activePlayer++];
         player.money += 2;
         player.isActive = true;
+        Debug.Log(player.nickname + " chose money");
     }
 
     private void ChooseCard(){
@@ -170,17 +161,17 @@ public class GameTurnManager : MonoBehaviour
         var player = StartGame.players[PhotonNetwork.LocalPlayer.ActorNumber - 1];
         if(player.haveLibrary)
             cardDealer.StartDealingWithCount(2);
-        else{
-        cardChoisePanel.SetActive(true);
-        for (int i = 0; i < player.giveCardInStartTurn; i++){   
-            int randomIndex = UnityEngine.Random.Range(0, CardDealer.deck.Count);
-            Card selectedCard = CardDealer.deck[randomIndex];
-            var cardObject = Instantiate(choiseCardPrefab, cardChoisePanel.transform.GetChild(0).transform, false);
-            cardObject.GetComponent<CardInfoScr>().ShowCardInfo(selectedCard);
+        else
+        {
+            cardChoisePanel.SetActive(true);
+            for (int i = 0; i < player.giveCardInStartTurn; i++)
+            {
+                int randomIndex = UnityEngine.Random.Range(0, CardDealer.deck.Count);
+                Card selectedCard = CardDealer.deck[randomIndex];
+                var cardObject = Instantiate(choiseCardPrefab, cardChoisePanel.transform.GetChild(0).transform, false);
+                cardObject.GetComponent<CardInfoScr>().ShowCardInfo(selectedCard);
+            }
         }
-        }
-
-        
     }
 
     public void MoneyButton_Click(){
@@ -224,8 +215,7 @@ public class GameTurnManager : MonoBehaviour
         foreach (var roleBut in ButtonRole)
             roleBut.SetActive(true);
         KillPlayer.roleNameKill = "";
-                    
-                
+        Debug.Log("New cycle begins!!!");
     }
     [PunRPC]
     void Robbed(int idRobPlayer, int idThiefPlayer){
@@ -233,6 +223,7 @@ public class GameTurnManager : MonoBehaviour
         int moneyCount = players[idRobPlayer - 1].money;
         players[idRobPlayer - 1].money = 0;
         players[idThiefPlayer - 1].money += moneyCount;
+        Debug.Log(players[idThiefPlayer - 1].nickname + " robbed " + players[idRobPlayer - 1].role);
         soundManager.ThiefSteal();
     }
 
@@ -241,6 +232,7 @@ public class GameTurnManager : MonoBehaviour
         if(player.role.Name == "Architect")
             player.placeableCardCount = 3;
     }
+    
     [PunRPC]
     void SevenCards(){
         int index;
@@ -259,9 +251,11 @@ public class GameTurnManager : MonoBehaviour
             if(first){
                 turnBasedPlayerList[index].score += 4;
                 turnBasedPlayerList[index].isEndFirst = true;
+                Debug.Log(turnBasedPlayerList[index].nickname + " has built 7 locations");
             }
         }
     }
+    
     bool CheckedEnd(){
         var players = StartGame.players;
         foreach(var player in players){
@@ -281,7 +275,7 @@ public class GameTurnManager : MonoBehaviour
             foreach(var card in player.placedCards){
                 player.score += card.cost;
                 if(card.Name == "Dragongate" || card.Name == "University")
-                    player.score +=2;
+                    player.score += 2;
             }
             if(CheckedAllTypes(player))
                 player.score +=3;
@@ -289,6 +283,7 @@ public class GameTurnManager : MonoBehaviour
         }
         int index = idScore.IndexOf(idScore.Max());
         WinPanel.SetActive(true);
+        Debug.Log(players[index].nickname + " won the game");
         if(players[PhotonNetwork.LocalPlayer.ActorNumber - 1].id == players[index].id)
             LocalizationHelper.GetLocalizedString("UI", "WinText", text => 
             {
@@ -321,7 +316,7 @@ public class GameTurnManager : MonoBehaviour
         List<int> color = new List<int>{0,0,0,0,0};
         bool townCheck = false;
         foreach(var card in player.placedCards){
-            if (card.Name == "Hauntedcity")
+            if (card.Name == "Hauntedcity" && StartGame.round > player.roundForTown)
                 townCheck = true;
             else if (card.Color == "Yellow")
                 color[0]+=1;

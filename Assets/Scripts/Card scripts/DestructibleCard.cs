@@ -1,11 +1,7 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class DestructibleCard : MonoBehaviour, IPointerClickHandler
 {
@@ -18,27 +14,7 @@ public class DestructibleCard : MonoBehaviour, IPointerClickHandler
     {
         _destructionManager = FindObjectOfType<DestructionManager>();
     }
-
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(0)) // Проверяем нажатие левой кнопки мыши
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                Debug.Log("bhhbhhbh");
-                // Проверяем, был ли клик по этому объекту
-                if (hit.transform == transform)
-                {
-                    Debug.Log("sdfgfdfd");
-
-                     // Обновляем время последнего клика
-                }
-            }
-        }
-    }
-
-
+    
     private void Destruct()
     {
         _players = StartGame.players;
@@ -58,13 +34,10 @@ public class DestructibleCard : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         float timeSinceLastClick = Time.time - lastClickTime;
-
         if (timeSinceLastClick <= doubleClickInterval)
-                    {
-                        Debug.Log("jnjnjnjn");
-                        // Двойной клик
-                        Destruct();
-                    }
-                    lastClickTime = Time.time;
+        {
+            Destruct();
+        }
+        lastClickTime = Time.time;
     }
 }
