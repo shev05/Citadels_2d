@@ -170,6 +170,34 @@ MonoBehaviour:
     m_Localized: View the top 2 cards. Take 1. (If there are no special cards)
     m_Metadata:
       m_Items: []
+  - m_Id: 1368886683267072
+    m_Localized: Main Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1368987237511168
+    m_Localized: MusicVolume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1369057852813312
+    m_Localized: Effects Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1369164266500096
+    m_Localized: Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1369302498177024
+    m_Localized: Confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1369431502385152
+    m_Localized: Close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1370099403354112
+    m_Localized: Setting
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

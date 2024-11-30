@@ -159,6 +159,34 @@ MonoBehaviour:
     m_Key: ButtonChCard
     m_Metadata:
       m_Items: []
+  - m_Id: 1368886683267072
+    m_Key: MainVolume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1368987237511168
+    m_Key: MusicVolume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1369057852813312
+    m_Key: EffectsVolume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1369164266500096
+    m_Key: Language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1369302498177024
+    m_Key: ButtonConfirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1369431502385152
+    m_Key: ButtonClose
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1370099403354112
+    m_Key: Setting
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
