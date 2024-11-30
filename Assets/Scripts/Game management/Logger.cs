@@ -7,7 +7,7 @@ public class Logger: MonoBehaviour
 {
     private string logFilePath;
 
-    void Awake()
+   /* void Awake()
     {
         // Задаем путь к файлу лога
         logFilePath = Path.Combine(Application.persistentDataPath, "Temp", "log.txt");
@@ -51,5 +51,5 @@ public class FileLogHandler : ILogHandler
 
         // Также отправляем исключение в стандартный логгер Unity
         defaultLogHandler.LogException(exception, context);
-    }
+    }*/
 }

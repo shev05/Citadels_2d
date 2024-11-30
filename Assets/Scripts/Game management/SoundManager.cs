@@ -2,112 +2,162 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    private AudioSource audioSource; // Компонент AudioSource
+    public static SoundManager Instance { get; private set; }
 
-    public AudioClip cardDealer; 
+    [Header("Audio Sources")]
+    public AudioSource musicSource; // Источник для музыки
+    public AudioSource sfxSource;   // Источник для звуковых эффектов
+
+    [Header("Audio Clips")]
+    public AudioClip cardDealer;
     public AudioClip cardPut;
-    public AudioClip buildCard; 
-    public AudioClip assassinCard; 
-    public AudioClip thiefCard; 
-    public AudioClip magicianCard; 
-    public AudioClip kingCard; 
-    public AudioClip bishopCard; 
-    public AudioClip merchantCard; 
-    public AudioClip architectCard; 
-    public AudioClip warlordCard; 
-    public AudioClip assassinKill; 
+    public AudioClip buildCard;
+    public AudioClip assassinCard;
+    public AudioClip thiefCard;
+    public AudioClip magicianCard;
+    public AudioClip kingCard;
+    public AudioClip bishopCard;
+    public AudioClip merchantCard;
+    public AudioClip architectCard;
+    public AudioClip warlordCard;
+    public AudioClip assassinKill;
     public AudioClip thiefSteal;
     public AudioClip magicianSwap;
     public AudioClip warlordDestroy;
     public AudioClip winSound;
     public AudioClip loseSound;
     public AudioClip nextTurn;
-    
-    void Start()
+
+    [Header("Volume Settings")]
+    [Range(0f, 1f)] public float masterVolume = 1f;
+    [Range(0f, 1f)] public float musicVolume = 1f;
+    [Range(0f, 1f)] public float sfxVolume = 1f;
+
+    private void Awake()
     {
-        audioSource = GetComponent<AudioSource>();
-    }
-
-    public void CardDealerSound(){
-       
-        if (cardDealer != null)
+        // Singleton Pattern
+        if (Instance == null)
         {
-            audioSource.PlayOneShot(cardDealer, 1f);
+            Instance = this;
+            DontDestroyOnLoad(gameObject); // Сохраняем между сценами
         }
         else
         {
-            Debug.LogWarning("cardDealer (AudioClip) не назначен!");
+            Destroy(gameObject);
+            return;
         }
     }
 
-    public void CardPutSound(){
-       
-        if (cardDealer != null)
+    private void Start()
+    {
+        LoadVolumeSettings(); // Загружаем настройки громкости при старте
+    }
+
+    #region Volume Management
+
+    public void SetMasterVolume(float volume)
+    {
+        masterVolume = Mathf.Clamp01(volume);
+        SaveVolumeSetting("MasterVolume", masterVolume);
+        ApplyVolume();
+    }
+
+    public void SetMusicVolume(float volume)
+    {
+        musicVolume = Mathf.Clamp01(volume);
+        SaveVolumeSetting("MusicVolume", musicVolume);
+        ApplyVolume();
+    }
+
+    public void SetSFXVolume(float volume)
+    {
+        sfxVolume = Mathf.Clamp01(volume);
+        SaveVolumeSetting("SFXVolume", sfxVolume);
+        ApplyVolume();
+    }
+
+    private void ApplyVolume()
+    {
+        // Настраиваем громкость для музыки и эффектов
+        if (musicSource != null)
+            musicSource.volume = masterVolume * musicVolume;
+
+        if (sfxSource != null)
+            sfxSource.volume = masterVolume * sfxVolume;
+    }
+
+    private void LoadVolumeSettings()
+    {
+        masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1f);
+        musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1f);
+        sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+        ApplyVolume();
+    }
+
+    private void SaveVolumeSetting(string key, float value)
+    {
+        PlayerPrefs.SetFloat(key, value);
+        PlayerPrefs.Save();
+    }
+
+    #endregion
+
+    #region Sound Playback
+
+    public void PlayMusic(AudioClip clip, bool loop = true)
+    {
+        if (musicSource != null)
         {
-            audioSource.PlayOneShot(cardPut);
+            musicSource.clip = clip;
+            musicSource.loop = loop;
+            musicSource.Play();
         }
     }
 
-    public void BuildedSound(){
-       
-        if (buildCard != null)
+    public void StopMusic()
+    {
+        if (musicSource != null)
+            musicSource.Stop();
+    }
+
+    public void PlayEffect(AudioClip clip, float volumeScale = 1f)
+    {
+        if (sfxSource != null && clip != null)
         {
-            audioSource.PlayOneShot(buildCard, 0.5f);
-        }
-        else
-        {
-            Debug.LogWarning("buildCard (AudioClip) не назначен!");
-        }
-    }
-    public void RoleSound(string name){
-        if(name == "Assassin" && assassinCard != null)
-            audioSource.PlayOneShot(assassinCard, 0.25f);
-        else if(name == "Thief" && thiefCard != null)
-            audioSource.PlayOneShot(thiefCard);
-        else if(name == "Magician" && magicianCard != null)
-            audioSource.PlayOneShot(magicianCard, 0.75f);
-        else if(name == "King" && kingCard != null)
-            audioSource.PlayOneShot(kingCard);
-        else if(name == "Bishop" && bishopCard != null)
-            audioSource.PlayOneShot(bishopCard, 0.5f);
-        else if(name == "Merchant" && merchantCard != null)
-            audioSource.PlayOneShot(merchantCard, 0.75f);
-        else if(name == "Architect" && architectCard != null)
-            audioSource.PlayOneShot(architectCard, 0.75f);
-        else if(name == "Warlord" && warlordCard != null)
-            audioSource.PlayOneShot(warlordCard);
-    }
-    public void AssassinKill(){
-        if(assassinKill != null)
-            audioSource.PlayOneShot(assassinKill);
-    }
-    public void ThiefSteal(){
-        if(thiefSteal != null)
-            audioSource.PlayOneShot(thiefSteal);
-    }
-    public void MagicianSwap(){
-        if(magicianSwap != null)
-            audioSource.PlayOneShot(magicianSwap);
-    }
-    public void WarlordDestroy(){
-        if(warlordDestroy != null)
-            audioSource.PlayOneShot(warlordDestroy);
-    }
-    public void WinSound(){
-        if(winSound != null){
-            audioSource.PlayOneShot(winSound);
-        }
-    }
-    public void LoseSound(){
-        if(loseSound != null){
-            audioSource.PlayOneShot(loseSound);
+            sfxSource.PlayOneShot(clip, volumeScale * sfxVolume * masterVolume);
         }
     }
 
-    public void NextTurnSound(){
-        if(nextTurn != null){
-            audioSource.PlayOneShot(nextTurn);
+    #endregion
+
+    #region Predefined Sounds
+
+    public void CardDealerSound() => PlayEffect(cardDealer);
+    public void CardPutSound() => PlayEffect(cardPut);
+    public void BuildedSound() => PlayEffect(buildCard, 0.5f);
+
+    public void RoleSound(string name)
+    {
+        switch (name)
+        {
+            case "Assassin": PlayEffect(assassinCard, 0.25f); break;
+            case "Thief": PlayEffect(thiefCard); break;
+            case "Magician": PlayEffect(magicianCard, 0.75f); break;
+            case "King": PlayEffect(kingCard); break;
+            case "Bishop": PlayEffect(bishopCard, 0.5f); break;
+            case "Merchant": PlayEffect(merchantCard, 0.75f); break;
+            case "Architect": PlayEffect(architectCard, 0.75f); break;
+            case "Warlord": PlayEffect(warlordCard); break;
         }
     }
+
+    public void AssassinKill() => PlayEffect(assassinKill);
+    public void ThiefSteal() => PlayEffect(thiefSteal);
+    public void MagicianSwap() => PlayEffect(magicianSwap);
+    public void WarlordDestroy() => PlayEffect(warlordDestroy);
+    public void WinSound() => PlayEffect(winSound);
+    public void LoseSound() => PlayEffect(loseSound);
+    public void NextTurnSound() => PlayEffect(nextTurn);
+
+    #endregion
 }
