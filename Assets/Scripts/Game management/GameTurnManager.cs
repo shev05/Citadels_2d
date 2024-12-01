@@ -29,6 +29,7 @@ public class GameTurnManager : MonoBehaviour
     private bool isPanelVisible = true;
     public static int activePlayer = 0;
     public TMP_Text textButton;
+    private DBManager _dbManager;
 
     void Start()
     {
@@ -37,6 +38,7 @@ public class GameTurnManager : MonoBehaviour
         playerState = FindObjectOfType<UpdatePlayerState>();
         cardDealer = FindObjectOfType<CardDealer>();
         soundManager = FindObjectOfType<SoundManager>();
+        _dbManager = FindObjectOfType<DBManager>();
     }
 
     public void NextTurn()
@@ -310,7 +312,7 @@ public class GameTurnManager : MonoBehaviour
             soundManager.WinSound();
         else soundManager.LoseSound();
         ButtonSide.SetActive(true);
-        
+        _dbManager.InsertPlayerStat(players[PhotonNetwork.LocalPlayer.ActorNumber - 1].nickname, players[PhotonNetwork.LocalPlayer.ActorNumber - 1].score);
     }
     bool CheckedAllTypes(Player player){
         List<int> color = new List<int>{0,0,0,0,0};
