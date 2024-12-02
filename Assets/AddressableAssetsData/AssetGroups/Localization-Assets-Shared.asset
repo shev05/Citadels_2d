@@ -17,8 +17,18 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: dd62a83d52c84bd4681d58a7fa3b5d08
   m_SerializeEntries:
+  - m_GUID: 33859c502f1c6d846b61b11d8e31b8ea
+    m_Address: Assets/Texture Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 76a3154f713e5124796a7acca9031717
     m_Address: Assets/TableLoc Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8e3ee6052063c146a7d8819e11a46fc
+    m_Address: Assets/New Table Shared Data.asset
     m_ReadOnly: 1
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
