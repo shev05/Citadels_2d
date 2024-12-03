@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class RoleChoosingScr : MonoBehaviour
 {
-    public GameObject popupPanel;
-    private KeyCode activationKey = KeyCode.Space;
+    [SerializeField] GameObject popupPanel;
     
+    private KeyCode activationKey = KeyCode.Space;
     
     void Start()
     {

@@ -7,9 +7,10 @@ public class UpdatePlayerState : MonoBehaviour
 {
     private PhotonView photonView;
     private List<Player> players;
-    public List<TMP_Text> cardCount;
-    public List<TMP_Text> moneyCount;
-    public List<GameObject> Crown;
+    
+    [SerializeField] List<TMP_Text> cardCount;
+    [SerializeField] List<TMP_Text> moneyCount;
+    [SerializeField] List<GameObject> Crown;
     
     void Start()
     {

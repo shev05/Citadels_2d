@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class PurpleActive : MonoBehaviour
 {
-    private CardDealer cardDealer;
+    CardDealer cardDealer;
     PhotonView photonView;
     UpdatePlayerState playerState;
-    public GameObject cardPlace;
-    public GameObject cardPanel;
+    
+    [SerializeField] GameObject cardPlace;
+    [SerializeField] GameObject cardPanel;
+    
     void Start()
     {
         photonView = GetComponent<PhotonView>();

@@ -6,17 +6,17 @@ using UnityEngine.UI;
 
 public class DestructionManager : MonoBehaviour
 {
+    [SerializeField] List<GameObject> hands;
+    [SerializeField] GameObject graveyardPanel;
+    [SerializeField] GameObject storage;
+    [SerializeField] GameObject cardPrefab;
+    
+    private SoundManager soundManager;
     private List<Player> _players;
     private PhotonView _photonView;
-    public List<GameObject> hands;
-    public GameObject destroyButton;
-    public GameObject graveyardPanel;
     private UpdatePlayerState playerState;
     private Card _resurrectedCard;
-    public GameObject storage;
     private int graveyardPlayerId = -1;
-    public GameObject cardPrefab;
-    private SoundManager soundManager;
     
     void Start()
     {
@@ -39,7 +39,6 @@ public class DestructionManager : MonoBehaviour
             _photonView.RPC("DestroyCard", RpcTarget.All, cardIndex, playerIndex,
                 PhotonNetwork.LocalPlayer.ActorNumber - 1);
             playerState.UpdateMoney();
-            destroyButton.SetActive(false);
         }
     }
 
@@ -105,11 +104,14 @@ public class DestructionManager : MonoBehaviour
         _resurrectedCard = card;
         foreach(var player in _players){
             if (player.hasGraveyard && player.money >= 1 && !player.role.Equals("Warlord"))
+            {
                 graveyardPlayerId = player.id;
+                Debug.Log(_players[graveyardPlayerId - 1].nickname + " can resurrect destroyed card");
+            }
         }
         if (PhotonNetwork.LocalPlayer.ActorNumber == graveyardPlayerId)
                 graveyardPanel.SetActive(true);
-        Debug.Log(_players[graveyardPlayerId - 1].nickname + " can resurrect destroyed card");
+        
     }
 
     public void GetResurrectedCard(){

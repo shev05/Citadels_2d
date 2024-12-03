@@ -1,13 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Setting : MonoBehaviour
 {
-    public Slider masterSlider;  // Привязать слайдер для MasterVolume
-    public Slider musicSlider;   // Привязать слайдер для MusicVolume
-    public Slider sfxSlider;     // Привязать слайдер для SFXVolume
+    [SerializeField] Slider masterSlider;  // Привязать слайдер для MasterVolume
+    [SerializeField] Slider musicSlider;   // Привязать слайдер для MusicVolume
+    [SerializeField] Slider sfxSlider;     // Привязать слайдер для SFXVolume
 
     private void Start()
     {

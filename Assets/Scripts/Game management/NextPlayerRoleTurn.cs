@@ -5,25 +5,22 @@ using UnityEngine.UI;
 
 public class NextPlayerRoleTurn : MonoBehaviour
 {
-    public GameObject panel;
-    public GameObject cardField;
-    private List<RoleCard> _roles;
-
-    public GameObject cardPrefab;
-
-    public Button selectCardButton;
-    private GameObject selectedCard;
-    private Vector3 originalPosition;
-    private float liftAmount = 5f;
-    public List<GameObject> cardsOnField = new List<GameObject>();
+    [SerializeField] GameObject panel;
+    [SerializeField] GameObject cardField;
+    [SerializeField] GameObject cardPrefab;
+    [SerializeField] Button selectCardButton;
     
-    private List<GameObject> remainingCards;
-    private PhotonView photonView;
+    List<GameObject> remainingCards;
+    PhotonView photonView;
     GameTurnManager _gameTurnManager;
     List<Player> players;
     SoundManager soundManager;
-
-
+    List<RoleCard> _roles;
+    GameObject selectedCard;
+    Vector3 originalPosition;
+    float liftAmount = 5f;
+    public List<GameObject> cardsOnField = new List<GameObject>();
+    
     private void Start()
     {
         selectCardButton.gameObject.SetActive(false);
@@ -31,7 +28,6 @@ public class NextPlayerRoleTurn : MonoBehaviour
         photonView = GetComponent<PhotonView>();
         _gameTurnManager = FindObjectOfType<GameTurnManager>();
         soundManager = FindObjectOfType<SoundManager>();
-
     }
     
     public void OnSelectCardButtonClick(GameObject cardRole)
@@ -89,8 +85,7 @@ public class NextPlayerRoleTurn : MonoBehaviour
         ClearHand();
         photonView.RPC("NextPlayerTurn", RpcTarget.AllBuffered, tableNumber, remainingCardNamesArray);
     }
-
-   
+    
     [PunRPC]
     void NextPlayerTurn(int tableNumber, string[] remainingCardNamesArray)
     {

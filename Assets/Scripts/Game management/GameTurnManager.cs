@@ -8,28 +8,29 @@ using UnityEngine.UI;
 
 public class GameTurnManager : MonoBehaviour
 {
+    [SerializeField] List<TMP_Text> roleTexts;
+    [SerializeField] Button nextTurnButton;
+    [SerializeField] GameObject choisePanel;
+    [SerializeField] GameObject cardChoisePanel;
+    [SerializeField] GameObject choiseCardPrefab;
+    [SerializeField] GameObject KillPanel;
+    [SerializeField] List<GameObject> ButtonRole; 
+    [SerializeField] GameObject WinPanel;
+    [SerializeField] List<TMP_Text> TextEnd;
+    [SerializeField] GameObject ButtonSide;
+    [SerializeField] TMP_Text textButton;
+    
+    private DBManager _dbManager;
     private List<Player> _players;
     private List<Player> turnBasedPlayerList;
-    public List<TMP_Text> roleTexts;
     private PhotonView photonView;
-    public Button nextTurnButton;
-    public GameObject choisePanel;
-    public GameObject cardChoisePanel;
-    public GameObject choiseCardPrefab;
-    private ChooseRole _chooseRole;
-    public GameObject KillPanel;
-    private int tableNumber;
-    public List<GameObject> ButtonRole; 
     private UpdatePlayerState playerState;
     private CardDealer cardDealer;
     private SoundManager soundManager;
-    public GameObject WinPanel;
-    public List<TMP_Text> TextEnd;
-    public GameObject ButtonSide;
     private bool isPanelVisible = true;
     public static int activePlayer = 0;
-    public TMP_Text textButton;
-    private DBManager _dbManager;
+    private int tableNumber;
+    private ChooseRole _chooseRole;
 
     void Start()
     {

@@ -1,14 +1,13 @@
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro; // Подключаем TextMeshPro
+using TMPro;
 using System.Text.RegularExpressions;
 
 public class SearchManager : MonoBehaviour
 {
-    public TMP_InputField searchField; // Поле ввода текста для поиска (TMP)
-    public TMP_Text[] sectionTexts; // Массив текстов всех разделов (TMP)
-    public GameObject[] sectionPanels; // Панели разделов
-    public Color highlightColor = Color.yellow; // Цвет подсветки
+    [SerializeField] TMP_InputField searchField; // Поле ввода текста для поиска (TMP)
+    [SerializeField] TMP_Text[] sectionTexts; // Массив текстов всех разделов (TMP)
+    [SerializeField] GameObject[] sectionPanels; // Панели разделов
+    [SerializeField] Color highlightColor = Color.yellow; // Цвет подсветки
 
     private string[] originalTexts; // Массив для сохранения исходных текстов
 

@@ -5,28 +5,28 @@ public class SoundManager : MonoBehaviour
     public static SoundManager Instance { get; private set; }
 
     [Header("Audio Sources")]
-    public AudioSource musicSource; // Источник для музыки
-    public AudioSource sfxSource;   // Источник для звуковых эффектов
+    [SerializeField] AudioSource musicSource; // Источник для музыки
+    [SerializeField] AudioSource sfxSource;   // Источник для звуковых эффектов
 
     [Header("Audio Clips")]
-    public AudioClip cardDealer;
-    public AudioClip cardPut;
-    public AudioClip buildCard;
-    public AudioClip assassinCard;
-    public AudioClip thiefCard;
-    public AudioClip magicianCard;
-    public AudioClip kingCard;
-    public AudioClip bishopCard;
-    public AudioClip merchantCard;
-    public AudioClip architectCard;
-    public AudioClip warlordCard;
-    public AudioClip assassinKill;
-    public AudioClip thiefSteal;
-    public AudioClip magicianSwap;
-    public AudioClip warlordDestroy;
-    public AudioClip winSound;
-    public AudioClip loseSound;
-    public AudioClip nextTurn;
+    [SerializeField] AudioClip cardDealer;
+    [SerializeField] AudioClip cardPut;
+    [SerializeField] AudioClip buildCard;
+    [SerializeField] AudioClip assassinCard;
+    [SerializeField] AudioClip thiefCard;
+    [SerializeField] AudioClip magicianCard;
+    [SerializeField] AudioClip kingCard;
+    [SerializeField] AudioClip bishopCard;
+    [SerializeField] AudioClip merchantCard;
+    [SerializeField] AudioClip architectCard;
+    [SerializeField] AudioClip warlordCard;
+    [SerializeField] AudioClip assassinKill;
+    [SerializeField] AudioClip thiefSteal;
+    [SerializeField] AudioClip magicianSwap;
+    [SerializeField] AudioClip warlordDestroy;
+    [SerializeField] AudioClip winSound;
+    [SerializeField] AudioClip loseSound;
+    [SerializeField] AudioClip nextTurn;
 
     [Header("Volume Settings")]
     [Range(0f, 1f)] public float masterVolume = 1f;

@@ -2,17 +2,19 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
-using UnityEngine.UI;
 
 public class ChangeLocalization : MonoBehaviour
 {
-    public TMP_Dropdown  dropdown;
+    [SerializeField] TMP_Dropdown  dropdown;
+    
     public void Button_RU(){
         ChangeLanguage("ru");
     }
+    
     public void Button_EN(){
         ChangeLanguage("en");
     }
+    
     public void ChangeLanguage(string languageCode)
     {
         Locale locale = LocalizationSettings.AvailableLocales.GetLocale(dropdown.options[dropdown.value].text.ToLower());

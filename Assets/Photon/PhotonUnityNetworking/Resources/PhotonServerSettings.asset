@@ -87,6 +87,9 @@ MonoBehaviour:
   - AddNickname
   - SetNickName
   - W
+  - GetAllGameCount
+  - GetAllNicknames
+  - GetGameCount
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0

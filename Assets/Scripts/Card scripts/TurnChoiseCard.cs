@@ -4,18 +4,18 @@ using UnityEngine.UI;
 
 public class TurnChoiseCard : MonoBehaviour
 {
-    GameObject selectedCard;
-
-    private float liftAmount = 5f;
-    public Button selectCardButton;
-    public Button buttonNextPlayer;
-    public GameObject cardPrefab;
-    public GameObject hand;
-    public GameObject panel;
-    public GameObject button;
-    private PhotonView photonView;
-    private UpdatePlayerState playerState;
+    [SerializeField] Button selectCardButton;
+    [SerializeField] Button buttonNextPlayer;
+    [SerializeField] GameObject cardPrefab;
+    [SerializeField] GameObject hand;
+    [SerializeField] GameObject panel;
+    [SerializeField] GameObject button;
+    
+    PhotonView photonView;
+    UpdatePlayerState playerState;
     SoundManager soundManager;
+    GameObject selectedCard;
+    float liftAmount = 5f;
     
     void Start()
     {

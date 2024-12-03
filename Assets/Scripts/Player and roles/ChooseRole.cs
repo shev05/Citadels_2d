@@ -5,12 +5,13 @@ using UnityEngine;
 
 public class ChooseRole : MonoBehaviour
 {
-    public GameObject panel;
-    public GameObject cardPrefab;
-    public GameObject cardField;
+    [SerializeField] GameObject panel;
+    [SerializeField] GameObject cardPrefab;
+    [SerializeField] GameObject cardField;
+    [SerializeField] List<GameObject> removedCardSlots;
+    
     static public List<RoleCard> roles;
-    public List<GameObject> removedCardSlots;
-    public List<RoleCard> removed = new List<RoleCard>();
+    private List<RoleCard> removed = new List<RoleCard>();
     static public List<Player> players;
     private PhotonView photonView;
     

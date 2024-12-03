@@ -6,18 +6,19 @@ using UnityEngine.UI;
 
 public class MagicianHandSwap : MonoBehaviour
 {
-    private List<Player> _players;
-    private PhotonView _photonView;
-    public Transform hand;
-    public GameObject cardPrefab;
-    private GameObject _currentAvatar;
-    private bool _playerSwapMode;
-    public List<Button> avatarButtons;
-    private UpdatePlayerState playerState;
-    public GameObject dropPanel;
+    [SerializeField] Transform hand;
+    [SerializeField] GameObject cardPrefab;
+    [SerializeField] List<Button> avatarButtons;
+    [SerializeField] GameObject dropPanel;
+    
     private CardDealer cardDealer;
     private SoundManager soundManager;
-
+    private List<Player> _players;
+    private PhotonView _photonView;
+    private GameObject _currentAvatar;
+    private bool _playerSwapMode;
+    private UpdatePlayerState playerState;
+    
     void Start()
     {
         _photonView = GetComponent<PhotonView>();

@@ -202,6 +202,22 @@ MonoBehaviour:
     m_Localized: Manual
     m_Metadata:
       m_Items: []
+  - m_Id: 2417631862951936
+    m_Localized: Game History
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2417756807073792
+    m_Localized: Nickname
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2417818131992576
+    m_Localized: Score
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2435748106309632
+    m_Localized: 'Games played:'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
