@@ -5,8 +5,12 @@ public class HandShow : MonoBehaviour
     public GameObject popupPanel;
     public GameObject settingPanel;
 
+    public GameObject manualPanel;
+
     private KeyCode activationKey = KeyCode.Space;
     private KeyCode activationKeyEsc = KeyCode.Escape;
+
+    private KeyCode activationTab = KeyCode.Tab;
 
     void Start()
     {
@@ -23,6 +27,10 @@ public class HandShow : MonoBehaviour
         {
             SettingsActive();
         }
+        else if (Input.GetKeyDown(activationTab))
+        {
+            ManualActive();
+        }
     }
     
     void TogglePopup()
@@ -32,5 +40,10 @@ public class HandShow : MonoBehaviour
     void SettingsActive()
     {
         settingPanel.SetActive(!settingPanel.activeSelf);
+    }
+
+    void ManualActive()
+    {
+        manualPanel.SetActive(!manualPanel.activeSelf);
     }
 }
