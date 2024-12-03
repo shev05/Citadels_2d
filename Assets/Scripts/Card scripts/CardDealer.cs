@@ -6,19 +6,20 @@ using Photon.Pun;
 
 public class CardDealer : MonoBehaviourPun
 {
-    public Transform playerHandPositions;
-    public Transform cardParent;
-    public int cardsToDeal = 4;
-    public float animationDuration = 0.5f;
-    public GameObject cardPrefab;
-    public GameObject cardPref;
+    [SerializeField] Transform playerHandPositions;
+    [SerializeField] Transform cardParent;
+    [SerializeField] int cardsToDeal = 4;
+    [SerializeField] float animationDuration = 0.5f;
+    [SerializeField] GameObject cardPrefab;
+    [SerializeField] GameObject cardPref;
+    [SerializeField] Canvas canvas;
+    
     List<Player> players;
     GameObject cardObject;
     public static List<Card> deck;
-    public Canvas canvas;
-    private PhotonView photonView;
-    private UpdatePlayerState playerState;
-    private SoundManager soundManager;
+    PhotonView photonView;
+    UpdatePlayerState playerState;
+    SoundManager soundManager;
 
     private void Start()
     {
@@ -40,8 +41,7 @@ public class CardDealer : MonoBehaviourPun
         }
         playerState.UpdateCard();
     }
-
-
+    
     [PunRPC]
     public void StartDealing()
     {
@@ -98,6 +98,7 @@ public class CardDealer : MonoBehaviourPun
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(targetParent.GetComponent<RectTransform>());
     }
+    
     [PunRPC]
     void DealingCard(int indexDelete, int id){
         Card selectedCard = deck[indexDelete];
@@ -111,10 +112,10 @@ public class CardDealer : MonoBehaviourPun
             Destroy(cardObject);
         Debug.Log(players[id - 1].nickname + " got " + selectedCard.Name + " card");
     }
+    
     IEnumerator Timeout(){
         yield return new WaitForSeconds(animationDuration / 2);
     }
-
     
 }
 

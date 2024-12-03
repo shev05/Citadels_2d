@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using Mono.Data.SqliteClient;
@@ -175,9 +174,10 @@ public class DBManager : MonoBehaviour
 		/// <summary>
 		/// Quick method to show how you can query everything.  Expland on the query parameters to limit what you're looking for, etc.
 		/// </summary>
-		public void GetAllStat()
+		public (List<string>,List<int>) GetAllStat()
 		{
-			System.Text.StringBuilder sb = new System.Text.StringBuilder();
+			List<string> nicks = new List<string>();
+			List<int> scores = new List<int>();
 
 			_connection.Open();
 
@@ -186,19 +186,12 @@ public class DBManager : MonoBehaviour
 			_reader = _command.ExecuteReader();
 			while (_reader.Read())
 			{
-				// reuse same stringbuilder
-				sb.Length = 0;
-				sb.Append(_reader.GetInt32(0)).Append(" ");
-				sb.Append(_reader.GetString(1)).Append(" ");
-				sb.Append(_reader.GetInt32(2)).Append(" ");
-				sb.AppendLine();
-
-				// view our output
-				if (DebugMode)
-					Debug.Log(sb.ToString());
+				nicks.Add(_reader.GetString(1));
+				scores.Add(_reader.GetInt32(2));
 			}
 			_reader.Close();
 			_connection.Close();
+			return (nicks, scores);
 		}
 
 		/// <summary>

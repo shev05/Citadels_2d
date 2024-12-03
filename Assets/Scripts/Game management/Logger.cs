@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -7,10 +5,10 @@ public class Logger: MonoBehaviour
 {
     private string logFilePath;
 
-   /* void Awake()
+    void Awake()
     {
         // Задаем путь к файлу лога
-        logFilePath = Path.Combine(Application.persistentDataPath, "Temp", "log.txt");
+        logFilePath = Path.Combine(Application.persistentDataPath, "log.txt");
 
         // Устанавливаем наш кастомный логгер
         Debug.unityLogger.logHandler = new FileLogHandler(logFilePath);
@@ -51,5 +49,5 @@ public class FileLogHandler : ILogHandler
 
         // Также отправляем исключение в стандартный логгер Unity
         defaultLogHandler.LogException(exception, context);
-    }*/
+    }
 }

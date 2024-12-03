@@ -191,6 +191,22 @@ MonoBehaviour:
     m_Key: Manual
     m_Metadata:
       m_Items: []
+  - m_Id: 2417631862951936
+    m_Key: HistoryButton
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2417756807073792
+    m_Key: HistoryNickname
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2417818131992576
+    m_Key: HistoryScore
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2435748106309632
+    m_Key: GamesPlayed
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

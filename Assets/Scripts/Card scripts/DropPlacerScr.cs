@@ -6,19 +6,20 @@ using UnityEngine.EventSystems;
 
 public class DropPlacerCScr : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    public int maxCards = 15;
-    private List<CardMovementScr> placedCards = new List<CardMovementScr>();
-    private CardMovementScr cardHovered = null;
-    public GameObject rotatedCard;
-    public GameObject simpleCard;
-    public GameObject tempCard;
-    public List<GameObject> hands;
-    public GameObject cardDropField;
-    public GameObject handField;
+    [SerializeField] int maxCards = 15;
+    [SerializeField] GameObject rotatedCard;
+    [SerializeField] GameObject simpleCard;
+    [SerializeField] GameObject tempCard;
+    [SerializeField] List<GameObject> hands;
+    [SerializeField] GameObject cardDropField;
+    [SerializeField] GameObject handField;
+    
+    List<CardMovementScr> placedCards = new List<CardMovementScr>();
+    CardMovementScr cardHovered = null;
     List<Player> players;
     PhotonView photonView;
-    private UpdatePlayerState playerState;
-    private SoundManager soundManager;
+    UpdatePlayerState playerState;
+    SoundManager soundManager;
 
 
     void Start(){

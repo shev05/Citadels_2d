@@ -2,14 +2,12 @@ using UnityEngine;
 
 public class HandShow : MonoBehaviour
 {
-    public GameObject popupPanel;
-    public GameObject settingPanel;
-
-    public GameObject manualPanel;
+    [SerializeField] GameObject popupPanel;
+    [SerializeField] GameObject settingPanel;
+    [SerializeField] GameObject manualPanel;
 
     private KeyCode activationKey = KeyCode.Space;
     private KeyCode activationKeyEsc = KeyCode.Escape;
-
     private KeyCode activationTab = KeyCode.Tab;
 
     void Start()

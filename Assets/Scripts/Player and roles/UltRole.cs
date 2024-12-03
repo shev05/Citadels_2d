@@ -4,16 +4,16 @@ using Photon.Pun;
 
 public class UltScript : MonoBehaviour
 {
-    public GameObject KillPanel;
-    public GameObject ThiefPanel;
-    public GameObject MagicianPanel;
-    public List<GameObject> ButtonRole;
-    public GameObject destructionPanel;
-    public GameObject panel;
+    [SerializeField] GameObject KillPanel;
+    [SerializeField] GameObject ThiefPanel;
+    [SerializeField] GameObject MagicianPanel;
+    [SerializeField] List<GameObject> ButtonRole;
+    [SerializeField] GameObject destructionPanel;
+    [SerializeField] GameObject panel;
 
     private KeyCode activationKey = KeyCode.Q;
     private KeyCode activationKeyForMoney = KeyCode.M;
-    PhotonView photonView;
+    private PhotonView photonView;
     private CardDealer cardDealer;
     private UpdatePlayerState playerState;
 

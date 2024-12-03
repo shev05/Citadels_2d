@@ -3,8 +3,8 @@ using UnityEngine.UI;
 
 public class InstructionManager : MonoBehaviour
 {
-    public GameObject[] sectionPanels; // Массив панелей для разных разделов
-    public Button[] sectionButtons; // Массив кнопок для выбора раздела
+    [SerializeField] GameObject[] sectionPanels; // Массив панелей для разных разделов
+    [SerializeField] Button[] sectionButtons; // Массив кнопок для выбора раздела
 
     void Start()
     {

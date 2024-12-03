@@ -5,9 +5,11 @@ using UnityEngine.UI;
 
 public class ThiefPlayer : MonoBehaviour
 {
-    public GameObject ThiefPanel;
+    [SerializeField] GameObject ThiefPanel;
+    [SerializeField] List<Button> buttons;
+    
     PhotonView photonView;
-    public List<Button> buttons;
+    
     void Start()
     {
         photonView = GetComponent<PhotonView>();
