@@ -5,7 +5,8 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "ScriptAssembly",
-        "UnityEngine.UI"
+        "UnityEngine.UI",
+        "PhotonUnityNetworking"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
